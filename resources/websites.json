@@ -1,0 +1,17 @@
+[
+    {
+        "name": "stubhub",
+        "id": "stubhub",
+        "url": "http://www.stubhub.com/listingCatalog/select/?qt=fetchAllEvents&wt=json",
+        "language": "en",
+        "type": "api"
+    },
+    {
+        "name": "eventbrite",
+        "id": "eventbrite",
+        "url": "http://www.eventbrite.com/json/event_search?app_key=C2IDOBMECGZZUQKLJQ&max=100&region=CA",
+        "language": "en",
+        "type": "api"
+    }
+]
+
