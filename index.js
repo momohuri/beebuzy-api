@@ -14,11 +14,13 @@ mongoose.connect(conf.mongoEvents, function (err) {
     console.log('connected to db : ' + mongoose.connections["0"].name);
     var options = {
         cookieOptions: {
-            password:  'my-cookies-secret!@#$%',
-            isSecure:false
+            password: 'my-cookies-secret!@#$%',
+            isSecure: false
         }
     };
-    server.pack.require('yar',options,function(err){if(err) throw err});
+    server.pack.require('yar', options, function (err) {
+        if (err) throw err
+    });
     server.pack.require(['hapi-auth-cookie'], function (err) {
 
         server.auth.strategy('session', 'cookie', {
@@ -28,7 +30,6 @@ mongoose.connect(conf.mongoEvents, function (err) {
         });
 
 
-
         server.route([
             { method: 'GET', path: '/find', handler: Controllers.Home.find},
             { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate }},
@@ -36,9 +37,10 @@ mongoose.connect(conf.mongoEvents, function (err) {
             { method: 'get', path: '/logout', config: {handler: Controllers.Home.logout, auth: true  }},
 
             {method: 'GET', path: '/html', config: {handler: Controllers.Home.loginHTML, auth: { mode: 'try' }} },
+            {method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },
+
 
             {method: 'GET', path: '/pinEvent/{eventId}', config: { handler: Controllers.Home.pinEvent, auth: true  }},
-
             {method: 'GET', path: '/getPinnedEvents', config: { handler: Controllers.Home.getPinnedEvents, auth: true  }}
         ]);
 

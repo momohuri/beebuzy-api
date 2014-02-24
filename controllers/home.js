@@ -170,3 +170,24 @@ exports.loginHTML = function (request, reply) {
         + 'Password: <input type="password" name="password"><br/>'
         + '<input type="submit" value="Login"></form></body></html>');
 };
+
+
+exports.eventHTML = function (request, reply) {
+    var Event = mongoose.model('Event');
+    Event.findOne({_id:request.params.eventId}).exec(function (err, doc) {
+        if(doc === null) return reply("No event found");
+        reply('<h1>' + doc.get('title') + '</h1> \
+    </div>                               \
+        <div class="modal-body">            \
+            <p class="price">' + doc.get('price.min') + '-' + doc.get('price.max') + '</span>   \
+            </p>                                                                                                      \
+            <p class="date">' + doc.get('startDate') + '</p>                                                            \
+            <p class="street">' + doc.get('place.street') + ' - ' + doc.get('place.city') + '  ' + doc.get('place.region') + ' -      \
+                ' + doc.get('place.name') + '</p>                                                                          \
+            <p class="description">' + doc.get('description') + '</p>                                               \
+        </div>                                                                                                                 \
+    </div>');
+    });
+
+
+}
