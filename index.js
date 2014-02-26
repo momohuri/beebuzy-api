@@ -6,7 +6,9 @@ var Hapi = require('hapi'),
 
 
 // Create a server with a host and port
-var server = Hapi.createServer('localhost', 8001, {cors: true});
+var port;
+process.NODE_ENV=='prod'?port=80:port=8001;
+var server = Hapi.createServer('localhost', port, {cors: true});
 
 
 mongoose.connect(conf.mongoEvents, function (err) {
