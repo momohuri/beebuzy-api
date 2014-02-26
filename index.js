@@ -35,7 +35,7 @@ mongoose.connect(conf.mongoEvents, function (err) {
             { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate }},
             { method: 'POST', path: '/login', config: {handler: Controllers.Home.logIn, validate: Controllers.Home.logInValidate, auth: { mode: 'try' }} },
             { method: 'get', path: '/logout', config: {handler: Controllers.Home.logout, auth: true  }},
-            {method:'get',path:'/getAuthStatus',config:{handler:function(req,res){ res(true)},auth:true}} ,
+            {method:'get',path:'/getAuthStatus',config:{handler:Controllers.Home.isAuth,auth:true}} ,
 
             {method: 'GET', path: '/html', config: {handler: Controllers.Home.loginHTML, auth: { mode: 'try' }} },
             {method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },

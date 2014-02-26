@@ -93,7 +93,6 @@ exports.signUpValidate = {
     }
 };
 exports.signUp = function (request, reply) {
-    //todo validate the schema
     var User = mongoose.model('User');
     User.findOne({ name: request.payload.name })
         .exec(function (err, doc) {
@@ -103,9 +102,11 @@ exports.signUp = function (request, reply) {
                 if (err) reply({'error': err});
                 else {
                     request.payload.password = password;
-                    User.create(request.payload, function (err) {
+                    User.create(request.payload, function (err, doc) {
                         if (err) return reply({'error': err});
-                        reply({'success': true});
+                        request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
+                        request.session.set('eventPinned', doc.get("eventPinned"));
+                        reply({'success': true,name: doc.get('name')});
                     });
                 }
             });
@@ -131,7 +132,7 @@ exports.logIn = function (request, reply) {
                 if (!isValid) return reply({'error': 'Password not valid'});
                 request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
                 request.session.set('eventPinned', doc.get("eventPinned"));
-                reply({success: true});
+                reply({success: true,name: doc.get('name')});
             });
         });
 };
@@ -140,6 +141,10 @@ exports.logout = function (request, reply) {
     request.auth.session.clear();
     request.session.clear();
     return reply({'success': true});
+};
+
+exports.isAuth = function (request, reply) {
+    reply({success: true, name: request.auth.session.get('name')});
 };
 
 
@@ -158,9 +163,9 @@ exports.pinEvent = function (request, reply) {
 
 exports.getPinnedEvents = function (request, reply) {
     var Event = mongoose.model('Event');
-    if(!request.session.get('eventPinned')) return reply([]);
+    if (!request.session.get('eventPinned')) return reply([]);
     Event.find({_id: {$in: request.session.get('eventPinned')}}).exec(function (err, docs) {
-        if(err) return reply({'error':err});
+        if (err) return reply({'error': err});
         reply(docs);
     });
 };
@@ -177,8 +182,8 @@ exports.loginHTML = function (request, reply) {
 
 exports.eventHTML = function (request, reply) {
     var Event = mongoose.model('Event');
-    Event.findOne({_id:request.params.eventId}).exec(function (err, doc) {
-        if(doc === null) return reply("No event found");
+    Event.findOne({_id: request.params.eventId}).exec(function (err, doc) {
+        if (doc === null) return reply("No event found");
         reply('<h1>' + doc.get('title') + '</h1> \
     </div>                               \
         <div class="modal-body">            \
