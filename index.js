@@ -7,7 +7,7 @@ var Hapi = require('hapi'),
 
 // Create a server with a host and port
 var port;
-process.NODE_ENV=='prod'?port=80:port=8001;
+process.env.NODE_ENV == 'prod' ? port = 80 : port = 8001;
 var server = Hapi.createServer('localhost', port, {cors: true});
 
 
@@ -37,7 +37,7 @@ mongoose.connect(conf.mongoEvents, function (err) {
             { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate }},
             { method: 'POST', path: '/login', config: {handler: Controllers.Home.logIn, validate: Controllers.Home.logInValidate, auth: { mode: 'try' }} },
             { method: 'get', path: '/logout', config: {handler: Controllers.Home.logout, auth: true  }},
-            {method:'get',path:'/getAuthStatus',config:{handler:Controllers.Home.isAuth,auth:true}} ,
+            {method: 'get', path: '/getAuthStatus', config: {handler: Controllers.Home.isAuth, auth: true}} ,
 
             {method: 'GET', path: '/html', config: {handler: Controllers.Home.loginHTML, auth: { mode: 'try' }} },
             {method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },
@@ -49,7 +49,7 @@ mongoose.connect(conf.mongoEvents, function (err) {
 
 
         server.start();
-        console.log('listening to 8001');
+        console.log('listening to ' + port);
     });
 
 
