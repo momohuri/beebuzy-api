@@ -3,7 +3,6 @@ var Schema = mongoose.Schema;
 var Bcrypt = require('bcrypt');
 
 
-
 module.exports = function () {
     var User = new Schema(
         {
@@ -23,7 +22,6 @@ module.exports = function () {
             Bcrypt.hash(password, 10, callback);
         }
     };
-
 
     mongoose.model('User', User);
 };

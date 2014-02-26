@@ -138,6 +138,7 @@ exports.logIn = function (request, reply) {
 
 exports.logout = function (request, reply) {
     request.auth.session.clear();
+    request.session.clear();
     return reply({'success': true});
 };
 
@@ -157,7 +158,9 @@ exports.pinEvent = function (request, reply) {
 
 exports.getPinnedEvents = function (request, reply) {
     var Event = mongoose.model('Event');
+    if(!request.session.get('eventPinned')) return reply([]);
     Event.find({_id: {$in: request.session.get('eventPinned')}}).exec(function (err, docs) {
+        if(err) return reply({'error':err});
         reply(docs);
     });
 };

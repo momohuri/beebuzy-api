@@ -14,7 +14,7 @@ module.exports = function () {
                     type: { type: String },
                     coordinates: []
                 }},
-            "startDate": {type: Date, index: true},
+            "startDate": {type: Date},
             "description": String,
             "price": { "max": Number, "min": Number, "currency": String },
             "eventId": String,
@@ -23,7 +23,7 @@ module.exports = function () {
         }
     );
 // define the index
-    Event.index({ "place.geo": '2dsphere' });
+    Event.index( { "place.geo": "2dsphere",startDate:1 });
 
     mongoose.model('Event', Event, 'articles');
 }
