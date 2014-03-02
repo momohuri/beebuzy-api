@@ -8,6 +8,7 @@ module.exports = function () {
         {
             "name": String,
             "password": String,
+            "email":String,
             "eventPinned": [
                 { type: Schema.ObjectId, ref: 'Event' }
             ]

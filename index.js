@@ -51,8 +51,6 @@ mongoose.connect(conf.mongoEvents, function (err) {
         server.start();
         console.log('listening to ' + port);
     });
-
-
 });
 
 

@@ -89,6 +89,7 @@ exports.find = function (request, reply) {
 exports.signUpValidate = {
     payload: {
         name: Hapi.types.String().required(),
+        email: Hapi.types.String().required(),
         password: Hapi.types.String().required()
     }
 };
@@ -98,41 +99,46 @@ exports.signUp = function (request, reply) {
         .exec(function (err, doc) {
             if (err) return reply({'error': err});
             if (doc !== null) return reply({'error': 'Name already used'});
-            User.hashPassword(request.payload.password, function (err, password) {
-                if (err) reply({'error': err});
-                else {
-                    request.payload.password = password;
-                    User.create(request.payload, function (err, doc) {
-                        if (err) return reply({'error': err});
-                        request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
-                        request.session.set('eventPinned', doc.get("eventPinned"));
-                        reply({'success': true,name: doc.get('name')});
+            User.findOne({ name: request.payload.email })
+                .exec(function (err, doc) {
+                    if (err) return reply({'error': err});
+                    if (doc !== null) return reply({'error': 'Email already used'});
+                    User.hashPassword(request.payload.password, function (err, password) {
+                        if (err) reply({'error': err});
+                        else {
+                            request.payload.password = password;
+                            User.create(request.payload, function (err, doc) {
+                                if (err) return reply({'error': err});
+                                request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
+                                request.session.set('eventPinned', doc.get("eventPinned"));
+                                reply({'success': true, name: doc.get('name')});
+                            });
+                        }
                     });
-                }
-            });
 
-        }
-    );
+                }
+            );
+        });
 };
 
 exports.logInValidate = {
     payload: {
-        name: Hapi.types.String().required(),
-        password: Hapi.types.String().required()
+        password: Hapi.types.String().required(),
+        email: Hapi.types.String().required()
     }
 };
 exports.logIn = function (request, reply) {
     var User = mongoose.model('User');
-    User.findOne({ name: request.payload.name })
+    User.findOne({ email: request.payload.name })
         .exec(function (err, doc) {
             if (err) return reply({'error': err});
             if (doc === null) return reply({'error': 'Name not found'});
-            User.validate(request.payload.name, request.payload.password, doc.get('password'), function (err, isValid) {
+            User.validate(request.payload.email, request.payload.password, doc.get('password'), function (err, isValid) {
                 if (err) return reply({'error': err});
                 if (!isValid) return reply({'error': 'Password not valid'});
                 request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
                 request.session.set('eventPinned', doc.get("eventPinned"));
-                reply({success: true,name: doc.get('name')});
+                reply({success: true, name: doc.get('name')});
             });
         });
 };
@@ -146,7 +152,6 @@ exports.logout = function (request, reply) {
 exports.isAuth = function (request, reply) {
     reply({success: true, name: request.auth.session.get('name')});
 };
-
 
 exports.pinEvent = function (request, reply) {
     var User = mongoose.model('User');
@@ -170,7 +175,6 @@ exports.getPinnedEvents = function (request, reply) {
     });
 };
 
-
 exports.loginHTML = function (request, reply) {
     return reply('<html><head><title>Login page</title></head><body>'
         + '<form method="post" action="/login">'
@@ -178,7 +182,6 @@ exports.loginHTML = function (request, reply) {
         + 'Password: <input type="password" name="password"><br/>'
         + '<input type="submit" value="Login"></form></body></html>');
 };
-
 
 exports.eventHTML = function (request, reply) {
     var Event = mongoose.model('Event');
