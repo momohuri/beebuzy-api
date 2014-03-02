@@ -1,0 +1,19 @@
+
+<script type="text/ng-template" id="needToLog.html">
+    <div class="info"><!-- modal -->
+        <div class="modal-header"><a class="close" ng-click="cancel()">×</a>
+            <h1>You don't have access to this functionality yet !</h1>
+        </div>
+        <div class="modal-body">
+
+            <p>You need to log or sign In for this functionality </p>
+            <button class="btn btn-info" name="info" ng-click="parentScope.openModal('SignUpModal')"> Sign up</button>
+            <button class="btn btn-warning" name="info" ng-click="parentScope.openModal('LogInModal')"> Log in</button>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>

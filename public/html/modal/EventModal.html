@@ -1,0 +1,29 @@
+<script type="text/ng-template" id="EventModal.html">
+    <div class="info"><!-- modal -->
+        <div class="modal-header"><a class="close" ng-click="cancel()">×</a>
+
+            <h1>{{eventModal.title}}</h1>
+        </div>
+        <div class="modal-body">
+            {{parentScope}}
+            <p class="price">{{eventModal.price.min|number}} {{eventModal.price.currency}} <span
+                    ng-show="eventModal.price.max">- {{eventModal.price.max|number}} {{eventModal.price.currency}}</span>
+            </p>
+
+            <p class="date">{{eventModal.startDate | date:'MMM d, yyyy hh:mm'}}</p>
+
+            <p class="street">{{eventModal.place.street}} - {{eventModal.place.city}} {{eventModal.place.region}} -
+                {{eventModal.place.name}}</p>
+
+            <p class="description" ng-bind-html="eventModal.description"></p>
+
+            <p class="lien"><a href="{{eventModal.url}}" target="_blank">{{eventModal.url}}</a></p>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Pin</button>
+    </div>
+</script>
+

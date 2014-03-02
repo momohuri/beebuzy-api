@@ -129,13 +129,15 @@ exports.logInValidate = {
 };
 exports.logIn = function (request, reply) {
     var User = mongoose.model('User');
-    User.findOne({ email: request.payload.name })
+    User.findOne({ email: request.payload.email })
         .exec(function (err, doc) {
             if (err) return reply({'error': err});
             if (doc === null) return reply({'error': 'Name not found'});
-            User.validate(request.payload.email, request.payload.password, doc.get('password'), function (err, isValid) {
+            User.validate(request.payload.password, doc.get('password'), function (err, isValid) {
                 if (err) return reply({'error': err});
                 if (!isValid) return reply({'error': 'Password not valid'});
+                console.log('aurh',request.auth);
+                console.log('session',request.auth.session);
                 request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
                 request.session.set('eventPinned', doc.get("eventPinned"));
                 reply({success: true, name: doc.get('name')});
@@ -150,7 +152,7 @@ exports.logout = function (request, reply) {
 };
 
 exports.isAuth = function (request, reply) {
-    reply({success: true, name: request.auth.session.get('name')});
+    reply({success: true, name: request.auth.credentials.name});
 };
 
 exports.pinEvent = function (request, reply) {
@@ -178,7 +180,16 @@ exports.getPinnedEvents = function (request, reply) {
 exports.loginHTML = function (request, reply) {
     return reply('<html><head><title>Login page</title></head><body>'
         + '<form method="post" action="/login">'
-        + 'Username: <input type="text" name="name"><br>'
+        + 'email: <input type="text" name="email"><br>'
+        + 'Password: <input type="password" name="password"><br/>'
+        + '<input type="submit" value="Login"></form></body></html>');
+};
+
+exports.signupHTML = function (request, reply) {
+    return reply('<html><head><title>Login page</title></head><body>'
+        + '<form method="post" action="/signUp">'
+        + 'name: <input type="text" name="name"><br>'
+        + 'email: <input type="text" name="email"><br>'
         + 'Password: <input type="password" name="password"><br/>'
         + '<input type="submit" value="Login"></form></body></html>');
 };

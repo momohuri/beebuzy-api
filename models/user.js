@@ -16,7 +16,7 @@ module.exports = function () {
     );
 
     User.statics = {
-        validate: function (username, password, storedPassword, callback) {
+        validate: function (password, storedPassword, callback) {
             Bcrypt.compare(password, storedPassword, callback);
         },
         hashPassword: function (password, callback) {

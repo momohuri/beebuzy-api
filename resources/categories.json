@@ -4,7 +4,7 @@
     "sport": [ "Sports tickets" , "endurance", "sports" ],
     "concert": ["Concert tickets", "performances", "music"],
     "entertainment": ["fairs", "social", "recreation", "travel", "entertainment", "food"],
-    "meeting": ["seminars", "religion", "fundraisers", "conferences", "conferences", "conventions", "meetings", "reunions"],
+    "meeting": ["seminars", "religion", "fundraisers", "conferences", "conventions", "meetings", "reunions"],
     "other": ["other", "sales",""]
 
 }

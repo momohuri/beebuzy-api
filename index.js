@@ -7,8 +7,8 @@ var Hapi = require('hapi'),
 
 // Create a server with a host and port
 var port;
-process.env.NODE_ENV == 'prod' ? port = 80 : port = 8001;
-var server = Hapi.createServer('localhost', port, {cors: true});
+
+var server = Hapi.createServer('localhost', 8001, {cors: {credentials:true}});
 
 
 mongoose.connect(conf.mongoEvents, function (err) {
@@ -17,7 +17,8 @@ mongoose.connect(conf.mongoEvents, function (err) {
     var options = {
         cookieOptions: {
             password: 'my-cookies-secret!@#$%',
-            isSecure: false
+            isSecure: false,
+            isHttpOnly:false
         }
     };
     server.pack.require('yar', options, function (err) {
@@ -28,7 +29,8 @@ mongoose.connect(conf.mongoEvents, function (err) {
         server.auth.strategy('session', 'cookie', {
             password: 'my-cookies-secret!@#$%',
             cookie: 'hello',
-            isSecure: false
+            isSecure: false,
+            isHttpOnly:false
         });
 
 
@@ -36,20 +38,23 @@ mongoose.connect(conf.mongoEvents, function (err) {
             { method: 'GET', path: '/find', handler: Controllers.Home.find},
             { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate }},
             { method: 'POST', path: '/login', config: {handler: Controllers.Home.logIn, validate: Controllers.Home.logInValidate, auth: { mode: 'try' }} },
-            { method: 'get', path: '/logout', config: {handler: Controllers.Home.logout, auth: true  }},
-            {method: 'get', path: '/getAuthStatus', config: {handler: Controllers.Home.isAuth, auth: true}} ,
+            { method: 'GET', path: '/logout', config: {handler: Controllers.Home.logout, auth: true  }},
+            { method: 'GET', path: '/getAuthStatus', config: {handler: Controllers.Home.isAuth, auth: true}} ,
 
-            {method: 'GET', path: '/html', config: {handler: Controllers.Home.loginHTML, auth: { mode: 'try' }} },
-            {method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },
+            { method: 'GET', path: '/html', config: {handler: Controllers.Home.loginHTML, auth: { mode: 'try' }} },
+            { method: 'GET', path: '/htmlsignup', config: {handler: Controllers.Home.signupHTML, auth: { mode: 'try' }} },
+            { method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },
 
+            { method: 'GET', path: '/pinEvent/{eventId}', config: { handler: Controllers.Home.pinEvent, auth: true  }},
+            {method: 'GET', path: '/getPinnedEvents', config: { handler: Controllers.Home.getPinnedEvents, auth: true  }},
 
-            {method: 'GET', path: '/pinEvent/{eventId}', config: { handler: Controllers.Home.pinEvent, auth: true  }},
-            {method: 'GET', path: '/getPinnedEvents', config: { handler: Controllers.Home.getPinnedEvents, auth: true  }}
+            {method: 'GET',path: '/{path*}', handler: {directory: { path: './public', listing: false, index: true }}
+        }
         ]);
 
 
         server.start();
-        console.log('listening to ' + port);
+        console.log('listening to 8001');
     });
 });
 

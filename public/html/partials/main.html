@@ -1,0 +1,230 @@
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container head">
+        <div class="row">
+
+            <div class="col-md-1"></div>
+
+            <div class="col-md-2">
+                <a class="navbar-brand" href="#"><img src="img/logobb.png" class="logo displaysite"/></a><!-- logo -->
+            </div>
+
+            <div class="col-md-6"><!-- champs de recherche -->
+                <form>
+                    <table width="100%" class="searchTable">
+
+                        <tr>
+                            <td><input type="text" id="Autocomplete" class="form-control" ng-autocomplete="result1"
+                                       details="details1"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" ng-model="startDate"
+                                       show-button-bar="false" min="minDate" max="'endDate'"
+                                       datepicker-popup="dd-MMMM-yyyy"
+                                       ng-required="true" close-text="Close"/>
+
+                            </td>
+
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> All
+                                    </label>
+                                </div>
+
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="categories[]" value="entertainment"
+                                               ng-checked="categories.indexOf('entertainment') > -1"
+                                               ng-click="toggleSelectionCategories('entertainment')"> Entertainment
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="categories[]" value="meeting"
+                                               ng-checked="categories.indexOf('meeting') > -1"
+                                               ng-click="toggleSelectionCategories('meeting')"> Meetings
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <button class="btn btn-success" id="find" ng-click="search()" type="button">Find
+                                </button>
+
+                            <td>
+                                <input type="text" class="form-control" ng-model="endDate" show-button-bar="false"
+                                       min="startDate" max="'2015-06-22'" datepicker-popup="dd-MMMM-yyyy"
+                                       ng-required="true" close-text="Close"/>
+
+                            </td>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="categories[]" value="concert"
+                                               ng-checked="categories.indexOf('concert') > -1"
+                                               ng-click="toggleSelectionCategories('concert')"> Concerts
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="categories[]" value="theater"
+                                               ng-checked="categories.indexOf('theater') > -1"
+                                               ng-click="toggleSelectionCategories('theater')"> Theater&Plays
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="categories[]" value="sport"
+                                               ng-checked="categories.indexOf('sport') > -1"
+                                               ng-click="toggleSelectionCategories('sport')"> Sports
+                                    </label>
+                                </div>
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </form>
+
+            </div>
+
+            <div class="col-md-1"></div>
+            <div ng-controller="auth">
+
+                <div class="col-md-1" ng-show="!isAuth">
+                    <button class="login displaysite" name="info" ng-click="openModal('SignUpModal')"> Sign up</button>
+                    <button class="login displaysite" name="info" ng-click="openModal('LogInModal')"> Log in</button>
+                </div>
+
+                <div class="col-md-1" ng-show="isAuth">
+                    <button class="login displaysite" name="info" ng-click="logout()"> Logout</button>
+                </div>
+
+            </div>
+
+            <div class="col-md-1 right">
+                <button class="setting displaysite" name="info" ng-click="openModal('InfoModal')"> ?</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container main"> <!-- debut container main-->
+
+    <div class="row">
+
+        <div class="col-md-8">
+            <div class="row" ng-repeat="event in events" id="{{event._id}}">   <!-- debut events-->
+
+                <div class="col-md-2 displaysite"><!-- icone -->
+                    <img ng-src="img/{{event.category}}-icon.png" class="icone" alt=""/>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="pres">
+                        <h1>{{event.title}}</h1>
+
+                        <p class="date">{{event.startDate | date:'MMM d, yyyy hh:mm'}} <span
+                                class="displaymob {{event.category}}-color "> {{event.category}} </span></p>
+
+                        <p class="street">{{event.place.street}} - {{event.place.city}} {{event.place.region}}</p>
+
+                        <p class="description" ng-bind-html="event.description | truncateHTML:500"></p>
+
+                        <p><span class="price">{{event.price.min|number}} {{event.price.currency}} <span
+                                ng-show="event.price.max">- {{event.price.max|number}} {{event.price.currency}}</span>
+                            </span>
+
+                            <span class="event-button">
+                                <a class="btn btn-success" ng-show="!{{event.pinned}}" ng-click="pinEvent(event._id)">Pin</a>
+                                <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
+                            </span>
+                        </p>
+
+
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <img ng-src="{{event.imageUrl}}" alt=""/>
+                </div>
+
+            </div>
+            <!-- fin events-->
+
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
+                <div id="divider"></div>
+                <button ng-show="events.length%30==0 && events.length!=0" class="btn btn-success" name="Submit"
+                        id="more" class="bouton_submit" ng-click="showMore()">More
+                </button>
+            </div>
+
+
+        </div>
+        <!-- fin row-->
+
+
+        <div class="col-md-4 affix right">   <!-- maps -->
+            <google-map center='map.center'
+                        zoom='map.zoom' draggable='true' options="map.options" controls="map.controls">
+
+                <marker ng-repeat="marker in markers" coords='marker.geo' click="goToEvent(marker._id)"
+                        icon="marker.icon">
+                </marker>
+
+                <!---->
+            </google-map>
+        </div>
+
+    </div>
+    <!-- end row-->
+
+
+</div> <!-- end container main-->
+
+
+<!-- Include pour les modals-->
+
+<div ng-include src="'html/modal/EventModal.html'"></div>
+
+<div ng-include src="'html/modal/SignUpModal.html'"></div>
+
+<div ng-include src="'html/modal/LogInModal.html'"></div>
+
+<div ng-include src="'html/modal/InfoModal.html'"></div>
+
+<div ng-include src="'html/modal/needToLog.html'"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

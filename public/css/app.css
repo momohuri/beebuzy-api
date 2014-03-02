@@ -1,0 +1,401 @@
+/* --------------------------------------------- GENERAL -----------------------------------------------*/
+
+html, body {
+    height: 100%;
+}
+
+.container {
+    min-height: 100%;
+    height: 100%;
+}
+
+
+/* Fonts */
+
+@font-face {
+    font-family: "ITC Kabel LT Book";
+    src: url('ITCKabel/ITC Kabel LT Book.ttf');
+}
+
+@font-face {
+    font-family: "ITC Kabel LT Bold";
+    font-style: bold;
+    src: url('ITCKabel/ITC Kabel LT Bold.ttf');
+}
+
+@font-face {
+    font-family: "ITC Kabel LT Medium";
+    src: url('ITCKabel/ITC Kabel LT Medium.ttf');
+}
+
+@font-face {
+    font-family: "ITC Kabel LT Ultra";
+    src: url('ITCKabel/ITC Kabel LT Ultra.ttf');
+}
+
+@font-face {
+    font-family: "ITC Kabel LT Demi";
+    src: url('ITCKabel/ITC Kabel LT Demi.ttf');
+}
+
+/* Global */
+
+img {
+    max-width: 100%;
+}
+
+a:link {
+    color: #blue;
+}
+
+a:hover {
+    color: #E0B028;
+}
+
+.right {
+    right: 0;
+
+}
+
+/* ---------------------------------------------- surcharge de bootstrap --------------------------------------------*/
+
+.modal-dialog {
+    width: 65%;
+}
+
+.nospace .col-md-4{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+
+/* --------------------------------------------- HEADER/RECHERCHE -----------------------------------------------*/
+
+.head {
+    width: 100%;
+    color: #ffffff;
+    z-index: 1000;
+}
+
+.searchTable {
+    margin-top: 25px;
+}
+
+.logo {
+    width: 150px;
+}
+
+.login {
+    width: 70px;
+    height: 40px;
+    position: relative;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 15px;
+    color: #ffffff;
+    background-color: #222222;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+}
+
+.login:hover {
+ background-color: #EFD242;
+ color: black;
+}
+
+.setting {
+    width: 53px;
+    height: 65px;
+    position: relative;
+    float: left;
+    margin-right: 10px;
+    margin-top: 18px;
+    text-align: center;
+    font-size: 60px;
+    color: #ffffff;
+    background-color: #222222;
+    border: none;
+
+}
+
+.setting:hover {
+ color: #EFD242;
+}
+
+.pac-container {
+    z-index: 10000;
+}
+
+.form-control {
+    width: 75%;
+}
+
+.btn-success {
+    background-color: #EFD242;
+    border: none;
+    color: #111111;
+}
+
+.btn-success:hover {
+
+    background-color: #EFC660;
+
+}
+
+
+#find {
+    width: 75%;
+}
+
+#divider {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background-color: #ffffff;
+    color: #111111;
+}
+
+#more {
+    width: 100%;
+    background-color: #ffffff;
+    border: solid 1px #111111;
+    color: #111111;
+    margin-bottom: 50px;
+}
+
+#more:hover {
+
+    background-color: #EFD242;
+
+}
+
+.entertainment-color {
+    color: #EFD242;
+}
+
+.meeting-color {
+    color: #DB4D21;
+}
+
+.concert-color {
+    color: #DD1F6C;
+}
+
+.sport-color {
+    color: #00D5D7;
+}
+
+.theater-color {
+    color: #00DB7B;
+}
+
+.other-color {
+    color: black;
+}
+
+
+
+/* --------------------------------------------- CONTENUE LA MAIN PAGE -----------------------------------------------*/
+
+.main {
+    margin-top: 110px;
+    width: 100%;
+    height: 100%;
+}
+
+.icone {
+    width: 65px;
+    margin-top: 30px;
+}
+
+.pres h1 {
+    font-size: 1.8em;
+    letter-spacing: 0px;
+    color: #333333;
+    font-weight: 600;
+    word-spacing: 0.1em;
+    text-align: left;
+    font-family: "Helvetica Neue", 'ITCKabel LT Book', Helvetica, Arial, sans-serif;
+}
+
+.pres h2 {
+
+}
+
+.pres p {
+    color: #111111;
+    font-size: 1em;
+    text-align: left;
+    font-family: "Helvetica Neue", 'ITCKabel LT Book', Helvetica, Arial, sans-serif;
+}
+
+.date {
+    font-style: italic;
+    font-weight: 500;
+}
+
+.street {
+    font-weight: 500;
+}
+
+.price {
+    font-weight: 600;
+}
+
+.description {
+    font-weight: 400;
+}
+
+.lien {
+    font-weight: 400;
+    color: #E0B028;
+}
+
+.pres {
+    float: left;
+    width:100%;
+}
+
+
+.event-button{
+  float:right;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+
+
+/* ------------------------------- LA MAPS ----------------------------------*/
+
+.gmnoprint img {
+    max-width: none;
+}
+
+
+
+
+/* --------------------------------------------- CONTENUE LA MAIN PAGE V2 -----------------------------------------------*/
+
+
+.vign {
+    background-color: rgba(255, 255, 255, 0.5);
+    position: relative;
+    margin-top: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    border: 0.5px solid #222222;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px 1px rgba(119, 119, 119, 0.75);
+    -moz-box-shadow: 0px 0px 2px 1px rgba(119, 119, 119, 0.75);
+    -webkit-box-shadow: 0px 0px 2px 1px rgba(119, 119, 119, 0.75);
+}
+
+
+.text-vign-left {
+  text-align: center;
+  color: #111111;
+    font-size: 1em;
+    text-align: left;
+    font-family: "Helvetica Neue", 'ITCKabel LT Book', Helvetica, Arial, sans-serif;
+
+}
+
+.illu-vign-center {
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+}
+.illu-vign-right {
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+}
+
+
+/* --------------------------------------------- CONTENUE DE DASHBOARD -----------------------------------------------*/
+
+.dashboard {
+    width: 100%;
+    height: 100%;
+    background:#F2F2F2;
+}
+
+.content {
+    margin-top: 110px;
+}
+
+.pin {
+    background-color: rgba(255, 255, 255, 0.5);
+    position: relative;
+    margin-top: 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 2px 1px rgba(119, 119, 119, 0.75);
+    -moz-box-shadow: 0px 0px 2px 1px rgba(119, 119, 119, 0.75);
+    -webkit-box-shadow: 0px 0px 2px 1px rgba(119, 119, 119, 0.75);
+}
+
+
+#divider-dash {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0);
+    color: #111111;
+}
+
+
+
+.illu{
+    position: relative;
+    width: 100%;
+    margin-top: 2px;
+    overflow: hidden;
+
+}
+
+
+/* --------------------------------------------- RESPONSIVE -----------------------------------------------*/
+
+/* jeu de Display pour le responsive */
+
+.displaysite {
+    display: block;
+}
+
+.displaymob {
+    display: none;
+}
+
+/* Tablet */
+@media screen and (max-width: 1024px) {
+
+    .displaysite {
+        display: none;
+    }
+
+    .displaymob {
+        display: block;
+    }
+
+}
+
+
+/* Mobile */
+@media screen and (max-width: 480px) {
+
+    .displaysite {
+        display: none;
+    }
+
+    .displaymob {
+        display: block;
+    }
+
+}
+
+
+

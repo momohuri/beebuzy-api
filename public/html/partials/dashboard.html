@@ -1,0 +1,198 @@
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container head">
+        <div class="row">
+
+            <div class="col-md-1"></div>
+
+            <div class="col-md-2">
+                <a class="navbar-brand" href="#"><img src="img/logobb.png" class="logo"/></a><!-- logo -->
+            </div>
+
+            <div class="col-md-6"><!-- champs de recherche -->
+
+
+            </div>
+
+            <div class="col-md-1"></div>
+
+            <div class="col-md-1 rigth">
+                <button class="setting displaysite" name="info" ng-click="openModal('InfoModal')"> ?</button>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<div class="container dashboard"> <!-- debut container dashboard-->
+
+    <div class="row content">
+
+        <div class="col-md-4">  <!-- colone 1 -->
+            
+            <div class="row pin" ng-repeat="event in events" id="{{event._id}}">   <!-- debut events-->
+
+                <div class="col-md-2 displaysite"><!-- icone -->
+                    <img src="img/{{event.category}}-icon.png" class="icone" alt=""/>
+                </div>
+
+                <div class="col-md-10"> <!-- debut text -->
+                    <div class="pres">
+                        <h1>{{event.title}}</h1>
+
+                        <p class="date">{{event.startDate | date:'MMM d, yyyy hh:mm'}} <span
+                                class="displaymob {{event.category}}-color "> {{event.category}} </span></p>
+
+                        <p class="street">{{event.place.street}} - {{event.place.city}} {{event.place.region}}</p>
+
+                        <p class="description" ng-bind-html="event.description | truncateHTML:500"></p>
+
+                        <p><span class="price">{{event.price.min|number}} {{event.price.currency}} <span
+                                ng-show="event.price.max">- {{event.price.max|number}} {{event.price.currency}}</span>
+                            </span>
+
+                            <span class="event-button">
+                                <a class="btn btn-success" ng-show="!{{event.pinned}}" ng-click="pinEvent(event._id)">Unpin</a>
+                                <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
+                            </span>
+                        </p>
+
+                    </div>
+                </div> <!-- fin text-->
+
+                    <!-- image
+                        <div class="col-md-12"><img ng-src="{{event.imageUrl}}" class="illu" alt="" /></div>
+                 </div> -->
+
+
+            </div><!-- fin events-->
+
+            <div class="col-md-12"> <div id="divider-dash"></div></div>
+
+
+        </div> <!-- fin colone 1-->
+
+
+
+
+
+        <div class="col-md-4">   <!-- colone 2 -->
+
+            <div class="row pin" ng-repeat="event in events" id="{{event._id}}">   <!-- debut events-->
+
+                <div class="col-md-2 displaysite"><!-- icone -->
+                    <img src="img/{{event.category}}-icon.png" class="icone" alt=""/>
+                </div>
+
+                <div class="col-md-10"> <!-- debut text -->
+                    <div class="pres">
+                        <h1>{{event.title}}</h1>
+
+                        <p class="date">{{event.startDate | date:'MMM d, yyyy hh:mm'}} <span
+                                class="displaymob {{event.category}}-color "> {{event.category}} </span></p>
+
+                        <p class="street">{{event.place.street}} - {{event.place.city}} {{event.place.region}}</p>
+
+                        <p class="description" ng-bind-html="event.description | truncateHTML:500"></p>
+
+                        <p><span class="price">{{event.price.min|number}} {{event.price.currency}} <span
+                                ng-show="event.price.max">- {{event.price.max|number}} {{event.price.currency}}</span>
+                            </span>
+
+                            <span class="event-button">
+                                <a class="btn btn-success" ng-show="!{{event.pinned}}" ng-click="pinEvent(event._id)">Unpin</a>
+                                <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
+                            </span>
+                        </p>
+
+                    </div>
+                </div> <!-- fin text-->
+
+
+            </div><!-- fin events-->
+
+            <div class="col-md-12"> <div id="divider-dash"></div></div>
+
+
+        </div>  <!-- fin colone 2 -->
+
+
+
+
+
+        <div class="col-md-4">   <!-- colone 3 -->
+
+
+            <div class="row pin" ng-repeat="event in events" id="{{event._id}}">   <!-- debut events-->
+
+                <div class="col-md-2 displaysite"><!-- icone -->
+                    <img src="img/{{event.category}}-icon.png" class="icone" alt=""/>
+                </div>
+
+                <div class="col-md-10"> <!-- debut text -->
+                    <div class="pres">
+                        <h1>{{event.title}}</h1>
+
+                        <p class="date">{{event.startDate | date:'MMM d, yyyy hh:mm'}} <span
+                                class="displaymob {{event.category}}-color "> {{event.category}} </span></p>
+
+                        <p class="street">{{event.place.street}} - {{event.place.city}} {{event.place.region}}</p>
+
+                        <p class="description" ng-bind-html="event.description | truncateHTML:500"></p>
+
+                        <p><span class="price">{{event.price.min|number}} {{event.price.currency}} <span
+                                ng-show="event.price.max">- {{event.price.max|number}} {{event.price.currency}}</span>
+                            </span>
+
+                            <span class="event-button">
+                                <a class="btn btn-success" ng-show="!{{event.pinned}}" ng-click="pinEvent(event._id)">Unpin</a>
+                                <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
+                            </span>
+                        </p>
+
+                    </div>
+                </div> <!-- fin text-->
+
+                      <!-- image
+                        <div class="col-md-12"><img ng-src="{{event.imageUrl}}" class="illu" alt="" /></div>
+                 </div> -->
+
+
+            </div><!-- fin events-->
+
+            <div class="col-md-12"> <div id="divider-dash"></div></div>
+
+        </div>  <!-- fin colone 3 -->
+
+    </div>
+    <!-- end row-->
+
+
+</div> <!-- end container dashboard-->
+
+
+
+
+
+<!-- Include pour les modals-->
+
+<div ng-include src="'html/modal/EventModal.html'"></div>
+
+<div ng-include src="'html/modal/SignUpModal.html'"></div>
+
+<div ng-include src="'html/modal/LogInModal.html'"></div>
+
+<div ng-include src="'html/modal/InfoModal.html'"></div>
+
+<div ng-include src="'html/modal/needToLog.html'"></div>
+
+
+
+
+
+
+
+
+
+
