@@ -1,6 +1,8 @@
 var Hapi = require('hapi'),
     mongoose = require('mongoose'),
     fs = require('fs'),
+    http = require('http'),
+    url = require('url'),
     conf = JSON.parse(fs.readFileSync('./conf/' + process.env.NODE_ENV + '.json', 'utf8')),
     Controllers = require('./controllers');
 
@@ -8,7 +10,10 @@ var Hapi = require('hapi'),
 // Create a server with a host and port
 var port;
 
-var server = Hapi.createServer('localhost', 8001, {cors: {credentials:true}});
+var server = Hapi.createServer('localhost', 8000, {cors: {credentials: true}});
+
+
+;
 
 
 mongoose.connect(conf.mongoEvents, function (err) {
@@ -18,7 +23,7 @@ mongoose.connect(conf.mongoEvents, function (err) {
         cookieOptions: {
             password: 'my-cookies-secret!@#$%',
             isSecure: false,
-            isHttpOnly:false
+            isHttpOnly: false
         }
     };
     server.pack.require('yar', options, function (err) {
@@ -30,13 +35,16 @@ mongoose.connect(conf.mongoEvents, function (err) {
             password: 'my-cookies-secret!@#$%',
             cookie: 'hello',
             isSecure: false,
-            isHttpOnly:false
+            isHttpOnly: false
         });
 
 
         server.route([
-            { method: 'GET', path: '/find', handler: Controllers.Home.find},
-            { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate }},
+
+            {method: 'GET', path: "/_escape_fragment_/{p*}", config: {handler: SEO}},
+
+            { method: 'GET', path: '/find', config: {handler: Controllers.Home.find, auth: { mode: 'try' }}},
+            { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate}},
             { method: 'POST', path: '/login', config: {handler: Controllers.Home.logIn, validate: Controllers.Home.logInValidate, auth: { mode: 'try' }} },
             { method: 'GET', path: '/logout', config: {handler: Controllers.Home.logout, auth: true  }},
             { method: 'GET', path: '/getAuthStatus', config: {handler: Controllers.Home.isAuth, auth: true}} ,
@@ -46,18 +54,68 @@ mongoose.connect(conf.mongoEvents, function (err) {
             { method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },
 
             { method: 'GET', path: '/pinEvent/{eventId}', config: { handler: Controllers.Home.pinEvent, auth: true  }},
+            { method: 'GET', path: '/unPinEvent/{eventId}', config: { handler: Controllers.Home.unPinEvent, auth: true  }},
             {method: 'GET', path: '/getPinnedEvents', config: { handler: Controllers.Home.getPinnedEvents, auth: true  }},
 
-            {method: 'GET',path: '/{path*}', handler: {directory: { path: './public', listing: false, index: true }}
-        }
+            {method: 'GET', path: '/{path*}', handler: {directory: { path: './public', listing: false, index: true}}
+            }
         ]);
 
 
         server.start();
-        console.log('listening to 8001');
+        console.log('listening to 8000');
     });
 });
 
 
+var SEO = function (request, reply) {
+    var token = 'crdaR26adq';
+
+    function getSnapshotServer() {
+        if (token) {
+            return 'http://cdn.getseojs.com/snapshots/' + token + '/v3';
+        } else if (process.env.SEOJS_URL) {
+            return process.env.SEOJS_URL + '/v3';
+        } else {
+            return null;
+        }
+    }
+
+    function getSnapshotUrl(req) {
+        var snapshotServer = getSnapshotServer();
+        var url = 'http://beebuzy.com' + req.url.href.replace('_escape_fragment_', '#');
+        return snapshotServer + '/' + url;
+    }
+
+    function getSnapshot(snapshotUrl, headers, outResponse) {
+        var options = url.parse(snapshotUrl);
+        options['headers'] = headers;
+        http.get(options,function (inResponse) {
+            var page;
+            inResponse.on('data', function (data) {
+                page += data;
+            });
+            inResponse.on('end', function () {
+                outResponse(page)
+            });
+        }).on('error', function (e) {
+        });
+    }
+
+    function getHeaders(req) {
+        var headers = {};
+        var keys = ['user-agent', 'if-none-match', 'if-modified-since', 'cache-control'];
+        for (var i in keys) {
+            var key = keys[i];
+            if (req.headers[key]) {
+                headers[key] = req.headers[key];
+            }
+        }
+        return headers;
+    }
+
+    getSnapshot(getSnapshotUrl(request), getHeaders(request), reply);
+
+}
 
 

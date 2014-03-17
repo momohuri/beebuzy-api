@@ -15,10 +15,7 @@
 
             <div class="col-md-1"></div>
 
-            <div class="col-md-1">
-                <button class="login" name="info" ng-click="openModal('SignUpModal')"> sign up</button>
-                <button class="login" name="info" ng-click="openModal('LogInModal')"> log in</button>
-            </div>
+            <authheader></authheader>
 
             <div class="col-md-1">
                 <button class="setting displaysite" name="info" ng-click="openModal('InfoModal')"> ?</button>
@@ -37,11 +34,12 @@
 
         <div class="row vign" ng-repeat="event in events" id="{{event._id}}">   <!-- debut events-->
 
-            <div class="col-md-1 displaysite"><!-- icone -->
+           <!--  <div class="col-md-1 displaysite">
                 <img src="img/{{event.category}}-icon.png" class="icone" alt=""/>
             </div>
+            -->
 
-            <div class="col-md-5"> <!-- debut text -->
+            <div class="col-md-6"> <!-- debut text -->
                 <div class="pres">
                     <h1>{{event.title}}</h1>
 
@@ -56,23 +54,41 @@
                             ng-show="event.price.max">- {{event.price.max|number}} {{event.price.currency}}</span>
                             </span>
 
-                            <span class="event-button">
-                                <a class="btn btn-success" ng-show="!{{event.pinned}}" ng-click="pinEvent(event._id)">Pin</a>
-                                <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
-                            </span>
+                           
                     </p>
 
                 </div>
             </div>
             <!-- fin text-->
 
-            <div class="col-md-6 nospace">
-                <div class="col-md-4" style="background-image: url(/img/8am.png); height:300px; overflow: hidden;" ><span class="text-vign-left">test</span></div>
+            <div class="col-md-6 ">
 
-                <div class="col-md-4 illu-vign-center" style=" background-image: url(../img/sf.png);">test</div>
-
-                <div class="col-md-4 illu-vign-right" style=" background-image: url(../img/8am.png);">test</div>
+            <div class="col-md-3"><!-- icone -->
+                  <img src="img/{{event.category}}-info.png" class="icone-circle" alt=""/>
             </div>
+
+             <div class="col-md-3"><!-- icone -->
+                  <img src="img/circle-price.png" class="icone-circle" alt=""/>
+            </div>
+
+             <div class="col-md-3"><!-- icone -->
+                <p class="date">{{event.startDate | date:'MMM d, yyyy hh:mm'}} <span
+                            class="displaymob {{event.category}}-color "> {{event.category}} </span></p>
+            </div>
+
+             <div class="col-md-3"><!-- icone -->
+                
+                 <span class="event-button-info">
+                                <a class="btn btn-success" ng-show="!{{event.pinned}}" ng-click="pinEvent(event._id)">Pin</a><br/><br/>
+                                <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
+                            </span>
+            </div>
+
+
+            </div>
+
+
+           
 
             <!-- image
                 <div class="col-md-12"><img ng-src="{{event.imageUrl}}" class="illu" alt="" /></div>

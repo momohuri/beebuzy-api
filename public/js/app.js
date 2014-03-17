@@ -12,12 +12,14 @@ angular.module('myApp', [
         'google-maps',
         'ui.bootstrap',
         'pascalprecht.translate',
-        'ngSanitize'
+        'ngSanitize',
+        'seo',
+        'duScroll'
     ]).
 
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/', {templateUrl: 'html/partials/main.html', controller: 'mainCtrl', reloadOnSearch: false});
-        $routeProvider.when('/dashboard', {templateUrl: 'html/partials/dashboard.html', controller: 'mainCtrl'});
+        $routeProvider.when('/dashboard', {templateUrl: 'html/partials/dashboard.html', controller: 'dashboard'});
         $routeProvider.when('/mainv2', {templateUrl: 'html/partials/mainv2.html', controller: 'mainCtrl'});
         $routeProvider.otherwise({redirectTo: '/'});
     }])

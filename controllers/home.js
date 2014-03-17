@@ -46,45 +46,19 @@ exports.find = function (request, reply) {
 
     if (params.latitude != undefined && params.longitude) {
         query['place.geo'] = { $nearSphere: [Number(params.longitude), Number(params.latitude)], $maxDistance: params.distance / 3959};
-        //   = { $near:  {coordinates: , type: 'Point'}, maxDistance: params.distance };
     }
 
     Event.find(query).limit(numberPerPage).skip(skip).sort('startDate').exec(function (err, docs) {
         if (err)throw err;
         docs.forEach(function (doc) {
-            doc._doc.pinned = request.auth.isAuthenticated ? request.session.eventPinned.indexOf(doc.get('id')) !== -1 : false;
-            doc._doc.category = setCategory(doc);
+            doc._doc.pinned = request.auth.isAuthenticated ? request.session.get('eventPinned').indexOf(doc.get('id')) !== -1 : false;
+            doc._doc.category = Event.setCategory(doc,params.categories);
         });
         reply(docs);
     });
 
-    function setCategory(doc) {
-        if (typeof params.categories === 'object') {  //if we have a category we just take from it
-            for (var y = 0; y < params.categories.length; y++) {
-                for (var i = 0; i < doc.categories.length; i++) {
-                    if (categories[params.categories[y]].indexOf(doc.categories[i]) !== -1) {
-                        return params.categories[y];
-                    }
-                }
-            }
-        } else if (typeof params.categories === 'string') {
-            for (var i = 0; i < doc.categories.length; i++) {
-                if (categories[params.categories].indexOf(doc.categories[i]) !== -1) {
-                    return params.categories;
-                }
-            }
-        } else {
-            for (var key in categories) {
-                for (var i = 0; i < doc.categories.length; i++) {
-                    if (categories[key].indexOf(doc.categories[i]) !== -1) {
-                        return key;
-                    }
-                }
-            }
-        }
-    }
-};
 
+};
 
 exports.signUpValidate = {
     payload: {
@@ -136,8 +110,8 @@ exports.logIn = function (request, reply) {
             User.validate(request.payload.password, doc.get('password'), function (err, isValid) {
                 if (err) return reply({'error': err});
                 if (!isValid) return reply({'error': 'Password not valid'});
-                console.log('aurh',request.auth);
-                console.log('session',request.auth.session);
+                console.log('aurh', request.auth);
+                console.log('session', request.auth.session);
                 request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
                 request.session.set('eventPinned', doc.get("eventPinned"));
                 reply({success: true, name: doc.get('name')});
@@ -165,6 +139,18 @@ exports.pinEvent = function (request, reply) {
         if (err) return reply({'error': err});
         reply({'success': true});
     });
+};
+
+exports.unPinEvent = function (request, reply) {
+    var User = mongoose.model('User');
+    //verify that is not already pinned
+    var a =  request.session.get('eventPinned');
+    a.splice(a.indexOf(request.params.enventId));
+    request.session.set('eventPinned', a);
+    User.update({_id: request.auth.credentials.id}, {$pull: {eventPinned: request.params.eventId }}, function (err, model) {
+        if (err) return reply({'error': err});
+        reply({'success': true});
+    });
 
 };
 
@@ -173,6 +159,10 @@ exports.getPinnedEvents = function (request, reply) {
     if (!request.session.get('eventPinned')) return reply([]);
     Event.find({_id: {$in: request.session.get('eventPinned')}}).exec(function (err, docs) {
         if (err) return reply({'error': err});
+
+        docs.forEach(function (doc) {
+            doc._doc.category = Event.setCategory(doc);
+        });
         reply(docs);
     });
 };
@@ -213,3 +203,5 @@ exports.eventHTML = function (request, reply) {
 
 
 }
+
+

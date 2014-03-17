@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "hapi": "~2.5.0",
+    "hapi": "~3.0.0",
     "mongoose": "~3.8.8",
     "glob": "~3.2.8",
     "bcrypt": "~0.7.7",

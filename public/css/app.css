@@ -292,25 +292,21 @@ a:hover {
 }
 
 
-.text-vign-left {
-  text-align: center;
-  color: #111111;
-    font-size: 1em;
-    text-align: left;
-    font-family: "Helvetica Neue", 'ITCKabel LT Book', Helvetica, Arial, sans-serif;
-
+.icone-circle {
+    width: 80px;
+    margin-top: 35px;
 }
 
-.illu-vign-center {
-    position: relative;
-    overflow: hidden;
-    height: 300px;
+
+
+.event-button-info{
+  float:right;
+    margin-right: 10px;
+    margin-top: 50px;
 }
-.illu-vign-right {
-    position: relative;
-    overflow: hidden;
-    height: 300px;
-}
+
+
+
 
 
 /* --------------------------------------------- CONTENUE DE DASHBOARD -----------------------------------------------*/

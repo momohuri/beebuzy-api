@@ -98,18 +98,8 @@
             </div>
 
             <div class="col-md-1"></div>
-            <div ng-controller="auth">
 
-                <div class="col-md-1" ng-show="!isAuth">
-                    <button class="login displaysite" name="info" ng-click="openModal('SignUpModal')"> Sign up</button>
-                    <button class="login displaysite" name="info" ng-click="openModal('LogInModal')"> Log in</button>
-                </div>
-
-                <div class="col-md-1" ng-show="isAuth">
-                    <button class="login displaysite" name="info" ng-click="logout()"> Logout</button>
-                </div>
-
-            </div>
+            <authheader></authheader>
 
             <div class="col-md-1 right">
                 <button class="setting displaysite" name="info" ng-click="openModal('InfoModal')"> ?</button>
@@ -123,7 +113,7 @@
 
     <div class="row">
 
-        <div class="col-md-8">
+        <div class="col-md-8" ng-controller="Event">
             <div class="row" ng-repeat="event in events" id="{{event._id}}">   <!-- debut events-->
 
                 <div class="col-md-2 displaysite"><!-- icone -->
@@ -139,14 +129,15 @@
 
                         <p class="street">{{event.place.street}} - {{event.place.city}} {{event.place.region}}</p>
 
-                        <p class="description" ng-bind-html="event.description | truncateHTML:500"></p>
+                        <p class="description" ng-bind-html="event.description | truncateHTML:100"></p>
 
                         <p><span class="price">{{event.price.min|number}} {{event.price.currency}} <span
                                 ng-show="event.price.max">- {{event.price.max|number}} {{event.price.currency}}</span>
                             </span>
 
                             <span class="event-button">
-                                <a class="btn btn-success" ng-show="!{{event.pinned}}" ng-click="pinEvent(event._id)">Pin</a>
+                                 <a class="btn btn-warning" ng-show="event.pinned" ng-click="unPin(event)">unPin</a>
+                                <a class="btn btn-success" ng-show="!event.pinned" ng-click="pinEvent(event)">Pin</a>
                                 <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
                             </span>
                         </p>
@@ -160,7 +151,7 @@
                 </div>
 
             </div>
-            <!-- fin events-->
+
 
             <div class="col-md-2"></div>
             <div class="col-md-10">
@@ -169,7 +160,7 @@
                         id="more" class="bouton_submit" ng-click="showMore()">More
                 </button>
             </div>
-
+            <!-- fin events-->
 
         </div>
         <!-- fin row-->
@@ -179,7 +170,7 @@
             <google-map center='map.center'
                         zoom='map.zoom' draggable='true' options="map.options" controls="map.controls">
 
-                <marker ng-repeat="marker in markers" coords='marker.geo' click="goToEvent(marker._id)"
+                <marker ng-repeat="marker in markers" coords='marker.geo'  click="goToEvent(marker._id)"
                         icon="marker.icon">
                 </marker>
 
@@ -197,10 +188,6 @@
 <!-- Include pour les modals-->
 
 <div ng-include src="'html/modal/EventModal.html'"></div>
-
-<div ng-include src="'html/modal/SignUpModal.html'"></div>
-
-<div ng-include src="'html/modal/LogInModal.html'"></div>
 
 <div ng-include src="'html/modal/InfoModal.html'"></div>
 

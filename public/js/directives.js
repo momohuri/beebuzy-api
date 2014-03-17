@@ -4,7 +4,7 @@
 
 
 angular.module('myApp.directives', [])
-    .directive('ngAutocomplete', function ($parse) {
+    .directive('ngAutocomplete', function () {
         return {
 
             scope: {
@@ -65,4 +65,10 @@ angular.module('myApp.directives', [])
                 }, true);
             }
         };
-    });
+    })
+    .directive('authheader', function () {
+        return {
+            restrict: 'AE',
+            templateUrl: '/html/directive/authHeader.html'
+        };
+    })

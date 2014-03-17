@@ -1,0 +1,17 @@
+<div ng-controller="auth">
+
+    <div class="col-md-1" ng-show="!isAuth">
+        <button class="login displaysite" name="info" ng-click="openModal('SignUpModal')"> Sign up</button>
+        <button class="login displaysite" name="info" ng-click="openModal('LogInModal')"> Log in</button>
+    </div>
+
+    <div class="col-md-1" ng-show="isAuth">
+        <button class="login displaysite" name="info" ng-click="logout()"> Logout</button>
+    </div>
+
+</div>
+
+
+<div ng-include src="'html/modal/SignUpModal.html'"></div>
+
+<div ng-include src="'html/modal/LogInModal.html'"></div>

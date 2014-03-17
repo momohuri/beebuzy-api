@@ -2,7 +2,7 @@
 
 /* Services */
 
-var url = 'http://beebuzy-api.aws.af.cm';
+var url = '';
 
 
 // Demonstrate how to register services
@@ -10,26 +10,27 @@ var url = 'http://beebuzy-api.aws.af.cm';
 angular.module('myApp.services', ['ngResource']).
     factory('Events', ['$resource', function ($resource) {
         var events = {
-            eventsFind: $resource(url + '/find', {}, {
+            eventsFind: $resource('/find', {}, {
                 get: {method: 'GET'}
             }),
 
-            pinEvent: $resource(url + '/pinEvent/:eventId', {eventId: '@eventId'})
+            pinEvent: $resource('/pinEvent/:eventId', {eventId: '@eventId'}),
+            unPinEvent: $resource('/unPinEvent/:eventId', {eventId: '@eventId'})
         };
         return events;
     }])
     .factory('User', ['$resource', function ($resource) {
 
-        var getAuth = $resource(url + '/getAuthStatus', {}, {
+        var getAuth = $resource('/getAuthStatus', {}, {
             get: {method: 'GET'}
         });
-        var login = $resource(url + '/login', {}, {
+        var login = $resource('/login', {}, {
             post: {method: 'POST', data: {email: '', password: ''}}
         });
-        var signUp = $resource(url + '/signUp', {}, {
+        var signUp = $resource('/signUp', {}, {
             post: {method: 'POST', data: {name: '', email: '', password: ''}}
         });
-        var logout = $resource(url + '/signUp', {}, {
+        var logout = $resource('/logout', {}, {
             get: {method: 'GET'}
         });
 
@@ -37,10 +38,11 @@ angular.module('myApp.services', ['ngResource']).
         var user = {
             isAuth: function (next) {
                 if (sessionStorage.isAuth == "true")  return next({success: true, name: sessionStorage.name});
-                getAuth.query({}, function (data) {
+                getAuth.get({}, function (data) {
+                    next(data);
                 }, function (res) {
                     if (res.status == 401) return  next(false);
-                    else  return  next(data);
+                    else  next(res);
                 });
             },
             login: function (user, next) {
@@ -62,10 +64,15 @@ angular.module('myApp.services', ['ngResource']).
                         return next({success: "Account created", name: data.name})
                     }
                 })
-            }
+            },
+            logout: function (next) {
+                logout.get({}, function (data) {
+                    sessionStorage.clear();
+                    next();
+                })
+            },
+            getPinnedEvents: $resource('/getPinnedEvents')
         };
-
-
         return user
 
     }]);

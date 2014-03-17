@@ -3,21 +3,24 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-    controller('mainCtrl', ['$scope', '$modal', '$location', '$window', 'Events', 'User', function ($scope, $modal, $location, $window, Events, User) {
+    controller('mainCtrl', ['$scope', '$modal', '$location', '$window', 'scroller','Events', 'User', function ($scope, $modal, $location, $window,scroller, Events, User) {
 
         // ----- functions
-        $scope.goToEvent = function (index) {
-            $.scrollTo($("#" + index).offset().top - 100, 'slow');
+        $scope.goToEvent = function (id) {
+            scroller.scrollToElement(document.getElementById(id), 100, 2000);
         };
 
         var refreshMarkers = function () {
             $scope.events.forEach(function (event) {
                 $scope.markers.push({_id: event._id, geo: {longitude: event.place.geo.coordinates[0], latitude: event.place.geo.coordinates[1]}, icon: "img/" + event.category + "-map.png"});
             });
+            //for the seo
+            $scope.htmlReady()
         };
 
         $scope.showMore = function () {
-            Events.eventsFind.query({page: ++page, latitude: $scope.details1.geometry.location.d, longitude: $scope.details1.geometry.location.e, startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
+
+            Events.eventsFind.query({page: ++page, latitude: $location.search().latitude , longitude: $location.search().longitude , startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
                 $scope.events = $scope.events.concat(data);
                 refreshMarkers();
             })
@@ -25,7 +28,7 @@ angular.module('myApp.controllers', []).
 
         $scope.search = function () {
             $scope.markers = [];
-            Events.eventsFind.query({latitude: $scope.details1.geometry.location.d, longitude: $scope.details1.geometry.location.e, startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
+            Events.eventsFind.query({latitude: $location.search().latitude , longitude: $location.search().longitude , startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
                 $scope.events = data;
                 refreshMarkers();
             });
@@ -51,18 +54,18 @@ angular.module('myApp.controllers', []).
                         $scope.error = result.error;
                     } else {
                         $modalInstance.dismiss();
-                        $location.path( "/dashboard" );
+                        $location.path("/dashboard");
                     }
                 });
             };
 
-            $scope.login = function(user){
+            $scope.login = function (user) {
                 User.login(user, function (result) {
                     if (result.error) {
                         $scope.error = result.error;
                     } else {
                         $modalInstance.dismiss();
-                        $location.path( "/dashboard" );
+                        $location.path("/dashboard");
                     }
                 });
             }
@@ -87,23 +90,12 @@ angular.module('myApp.controllers', []).
 
         var moveMap = function () {
             $scope.map.center = {
-                latitude: $scope.details1.geometry.location.d,
-                longitude: $scope.details1.geometry.location.e
+                latitude: $location.search().latitude ,
+                longitude: $location.search().longitude 
             }
 
         };
 
-
-        $scope.pinEvent = function (eventId) {
-            if ($scope.isAuth) {
-                Events.pinEvent.get({eventId: eventId}, function (data) {
-                    console.log(data);
-                })
-            } else {
-                $scope.openModal('needToLog');
-                console.log('need to sign in/login')
-            }
-        };
         // -----/functions
 
         //      ----- default values  -----
@@ -113,11 +105,12 @@ angular.module('myApp.controllers', []).
         var page = 0;
         $scope.result1 = 'San Francisco, CA, United States';
         $scope.options1 = null;
-        $scope.details1 = {geometry: {location: {d: 37.774929500000000000, e: -122.419415500000010000}}};
+        $location.search('latitude', 37.774929500000000000);
+        $location.search('longitude', -122.419415500000010000);
         $scope.map = {
             center: {
-                latitude: $scope.details1.geometry.location.d,
-                longitude: $scope.details1.geometry.location.e
+                latitude: $location.search().latitude ,
+                longitude: $location.search().longitude 
             },
 
             options: {
@@ -134,8 +127,6 @@ angular.module('myApp.controllers', []).
         //-----base actions
 
 
-
-
         $(window).resize(function () {
             var h = $(window).height(),
                 offsetTop = 110; // Calculate the top offset
@@ -150,7 +141,6 @@ angular.module('myApp.controllers', []).
             }
         }
         if ($location.search().latitude && $location.search().longitude) {
-            $scope.details1.geometry.location = {d: $location.search().latitude, e: $location.search().longitude};
             moveMap();
             $scope.search();
         } else {
@@ -161,8 +151,8 @@ angular.module('myApp.controllers', []).
             navigator.geolocation.getCurrentPosition(showPosition);
         }
         function showPosition(position) {
-            $scope.details1.geometry.location.d = position.coords.latitude;
-            $scope.details1.geometry.location.e = position.coords.longitude;
+            $location.search('latitude', position.coords.latitude);
+            $location.search('longitude', position.coords.longitude);
             $scope.search();
         }
 
@@ -186,7 +176,8 @@ angular.module('myApp.controllers', []).
             controlUI.appendChild(controlText);
 
             google.maps.event.addDomListener(controlUI, 'click', function () {
-                $scope.details1.geometry.location = {d: $window._m.center.d + '', e: $window._m.center.e + ''};
+                $location.search('latitude', $window._m.center.d);
+                $location.search('longitude', $window._m.center.e);
                 $scope.search();
             });
 
@@ -222,13 +213,33 @@ angular.module('myApp.controllers', []).
         }, true);
         $scope.$watch('details1.geometry.location', function (newValue, oldValue) {
             if (newValue !== oldValue) {
-                $location.search('latitude', $scope.details1.geometry.location.d);
-                $location.search('longitude', $scope.details1.geometry.location.e);
+                $location.search('latitude', $scope.details1.geometry.location.k);
+                $location.search('longitude', $scope.details1.geometry.location.A);
                 moveMap();
                 $scope.search();
             }
         });
         // ----/watch
+    }])
+    .controller('Event', ['$scope', 'Events', function ($scope, Events) {
+        $scope.pinEvent = function (event) {
+            if (sessionStorage.isAuth) {
+                Events.pinEvent.get({eventId: event._id}, function (data) {
+                    event.pinned = true;
+                });
+            } else {
+                $scope.openModal('needToLog');
+                console.log('need to sign in/login')
+            }
+        };
+
+        $scope.unPin = function (event) {
+            if (sessionStorage.isAuth) {
+                Events.unPinEvent.get({eventId: event._id}, function (data) {
+                    event.pinned = false;
+                });
+            }
+        };
     }])
     .controller('auth', ['$scope', 'User', function ($scope, User) {
         User.isAuth(function (data) {
@@ -240,4 +251,16 @@ angular.module('myApp.controllers', []).
             }
         });
 
+        $scope.logout = function () {
+            User.logout(function (err) {
+                $scope.isAuth = false;
+                delete $scope.name
+            })
+        }
+
+    }])
+    .controller('dashboard', ['$scope', 'User', function ($scope, User) {
+        $scope.events = User.getPinnedEvents.query({}, function (data) {
+
+        });
     }]);
