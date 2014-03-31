@@ -170,7 +170,7 @@
             <google-map center='map.center'
                         zoom='map.zoom' draggable='true' options="map.options" controls="map.controls">
 
-                <marker ng-repeat="marker in markers" coords='marker.geo'  click="goToEvent(marker._id)"
+                <marker ng-repeat="marker in markers" coords='marker.geo' click="goToEvent(marker._id)"
                         icon="marker.icon">
                 </marker>
 

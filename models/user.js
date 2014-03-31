@@ -1,14 +1,16 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Bcrypt = require('bcrypt');
-
+var db = require('../helpers/database').getMongoose();
+var model;
 
 module.exports = function () {
+    if (model) return model;
     var User = new Schema(
         {
             "name": String,
             "password": String,
-            "email":String,
+            "email": String,
             "eventPinned": [
                 { type: Schema.ObjectId, ref: 'Event' }
             ]
@@ -24,5 +26,5 @@ module.exports = function () {
         }
     };
 
-    mongoose.model('User', User);
+    return model = db.model('User', User);
 };

@@ -1,74 +1,60 @@
 var Hapi = require('hapi'),
-    mongoose = require('mongoose'),
-    fs = require('fs'),
     http = require('http'),
     url = require('url'),
-    conf = JSON.parse(fs.readFileSync('./conf/' + process.env.NODE_ENV + '.json', 'utf8')),
     Controllers = require('./controllers');
 
 
 // Create a server with a host and port
-var port;
-
 var server = Hapi.createServer('localhost', 8000, {cors: {credentials: true}});
 
 
-;
+var options = {
+    cookieOptions: {
+        password: 'my-cookies-secret!@#$%',
+        isSecure: false,
+        isHttpOnly: false
+    }
+};
+server.pack.require('yar', options, function (err) {
+    if (err) throw err
+});
+server.pack.require(['hapi-auth-cookie'], function (err) {
 
+    server.auth.strategy('session', 'cookie', {
+        password: 'my-cookies-secret!@#$%',
+        cookie: 'hello',
+        isSecure: false,
+        isHttpOnly: false
+    });
 
-mongoose.connect(conf.mongoEvents, function (err) {
-    if (err) throw err;
-    console.log('connected to db : ' + mongoose.connections["0"].name);
-    var options = {
-        cookieOptions: {
-            password: 'my-cookies-secret!@#$%',
-            isSecure: false,
-            isHttpOnly: false
+    server.route([
+
+        {method: 'GET', path: "/_escape_fragment_/{p*}", config: {handler: SEO}},
+
+        { method: 'GET', path: '/find', config: {handler: Controllers.Home.find, auth: { mode: 'try' }}},
+        { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate}},
+        { method: 'POST', path: '/login', config: {handler: Controllers.Home.logIn, validate: Controllers.Home.logInValidate, auth: { mode: 'try' }} },
+        { method: 'GET', path: '/logout', config: {handler: Controllers.Home.logout, auth: true  }},
+        { method: 'GET', path: '/getAuthStatus', config: {handler: Controllers.Home.isAuth, auth: true}} ,
+
+        { method: 'GET', path: '/html', config: {handler: Controllers.Home.loginHTML, auth: { mode: 'try' }} },
+        { method: 'GET', path: '/htmlsignup', config: {handler: Controllers.Home.signupHTML, auth: { mode: 'try' }} },
+        { method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },
+
+        { method: 'GET', path: '/pinEvent/{eventId}', config: { handler: Controllers.Home.pinEvent, auth: true  }},
+        { method: 'GET', path: '/unPinEvent/{eventId}', config: { handler: Controllers.Home.unPinEvent, auth: true  }},
+        {method: 'GET', path: '/getPinnedEvents', config: { handler: Controllers.Home.getPinnedEvents, auth: true  }},
+
+        {method: 'GET', path: '/{path*}', handler: {directory: { path: './public', listing: false, index: true}}
         }
-    };
-    server.pack.require('yar', options, function (err) {
-        if (err) throw err
-    });
-    server.pack.require(['hapi-auth-cookie'], function (err) {
-
-        server.auth.strategy('session', 'cookie', {
-            password: 'my-cookies-secret!@#$%',
-            cookie: 'hello',
-            isSecure: false,
-            isHttpOnly: false
-        });
+    ]);
 
 
-        server.route([
-
-            {method: 'GET', path: "/_escape_fragment_/{p*}", config: {handler: SEO}},
-
-            { method: 'GET', path: '/find', config: {handler: Controllers.Home.find, auth: { mode: 'try' }}},
-            { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate}},
-            { method: 'POST', path: '/login', config: {handler: Controllers.Home.logIn, validate: Controllers.Home.logInValidate, auth: { mode: 'try' }} },
-            { method: 'GET', path: '/logout', config: {handler: Controllers.Home.logout, auth: true  }},
-            { method: 'GET', path: '/getAuthStatus', config: {handler: Controllers.Home.isAuth, auth: true}} ,
-
-            { method: 'GET', path: '/html', config: {handler: Controllers.Home.loginHTML, auth: { mode: 'try' }} },
-            { method: 'GET', path: '/htmlsignup', config: {handler: Controllers.Home.signupHTML, auth: { mode: 'try' }} },
-            { method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },
-
-            { method: 'GET', path: '/pinEvent/{eventId}', config: { handler: Controllers.Home.pinEvent, auth: true  }},
-            { method: 'GET', path: '/unPinEvent/{eventId}', config: { handler: Controllers.Home.unPinEvent, auth: true  }},
-            {method: 'GET', path: '/getPinnedEvents', config: { handler: Controllers.Home.getPinnedEvents, auth: true  }},
-
-            {method: 'GET', path: '/{path*}', handler: {directory: { path: './public', listing: false, index: true}}
-            }
-        ]);
-
-
-        server.start();
-        console.log('listening to 8000');
-    });
+    server.start();
+    console.log('listening to 8000');
 });
 
-
-var SEO = function (request, reply) {
+function SEO(request, reply) {
     var token = 'crdaR26adq';
 
     function getSnapshotServer() {
@@ -90,7 +76,7 @@ var SEO = function (request, reply) {
     function getSnapshot(snapshotUrl, headers, outResponse) {
         var options = url.parse(snapshotUrl);
         options['headers'] = headers;
-        http.get(options,function (inResponse) {
+        http.get(options, function (inResponse) {
             var page;
             inResponse.on('data', function (data) {
                 page += data;

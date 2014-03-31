@@ -1,17 +1,17 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var fs = require('fs');
-var categories = JSON.parse(fs.readFileSync('./resources/categories.json', 'utf8'));
-
+var categories = require('../resources/categories.json');
+var db = require('../helpers/database').getMongoose();
+var model;
 
 module.exports = function () {
+    if (model) return model;
     var Event = new Schema(
-
         { "title": String,
             "categories": {type: [ ], index: true},
             "url": String,
             _id: Schema.Types.ObjectId,
-            "place": { "city": String, "country": String, "region": String, "street": String, "postal": String, "name": String,
+            "place": { "city": {type: String, index: true}, "country": String, "region": String, "street": String, "postal": String, "name": String,
                 geo: {
                     type: { type: String },
                     coordinates: []
@@ -26,7 +26,6 @@ module.exports = function () {
     );
 
     Event.statics = {
-
         setCategory: function (doc, paramsCategories) {
             if (typeof paramsCategories === 'object') {  //if we have a category we just take from it
                 for (var y = 0; y < paramsCategories.length; y++) {
@@ -52,9 +51,9 @@ module.exports = function () {
                 }
             }
         }
-    }
+    };
 // define the index
     Event.index({ "place.geo": "2dsphere", startDate: 1 });
 
-    mongoose.model('Event', Event, 'articles');
-}
+    return model = db.model('Event', Event, 'articles');
+};

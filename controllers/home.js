@@ -1,62 +1,74 @@
 var mongoose = require('mongoose'),
-    fs = require('fs'),
-    categories = JSON.parse(fs.readFileSync('./resources/categories.json', 'utf8')),
-    Hapi = require('hapi');
-require('../models/event')();
-require('../models/user')();
+    categories = require('../resources/categories.json'),
+    Hapi = require('hapi'),
+
+    User = require('../models/user')();
 
 
 exports.find = function (request, reply) {
-    var Event = mongoose.model('Event');
+
+    var Event = require('../models/event')();
+    var Cities = require('../models/cities')();
+
     var params = request.query;
     if (params.distance == undefined) params.distance = 15;
     if (params.page == undefined) params.page = 0;
     var numberPerPage = 30;
     var skip = params.page * numberPerPage;
-
     var query = {};
 
-    if (params.categories != undefined) {
-        if (typeof params.categories === "string") {
-            query.categories = {$in: categories[params.categories]};
-        } else {
-            query.categories = {$in: []};
-            params.categories.forEach(function (category) {
-                query.categories.$in = query.categories.$in.concat(categories[category]);
+    Cities.aggregate()
+        .near({spherical: true, near: [Number(params.longitude), Number(params.latitude)], distanceField: "geo", maxDistance: params.distance / 3959})
+        .group({ _id: { city: "$city"} })
+        .exec(function (err, docs) {
+//        if (params.latitude != undefined && params.longitude) {
+//            query['place.geo'] = { $nearSphere: [Number(params.longitude), Number(params.latitude)], $maxDistance: params.distance / 3959};
+//        }
+
+            var cities = [];
+            docs.forEach(function (item) {
+                if (cities.indexOf(item._id.city) === -1) cities.push(item._id.city);
+            });
+            query['place.city'] = { $in: cities};
+            //todo do postal code
+            if (params.categories != undefined) {
+                if (typeof params.categories === "string") {
+                    query.categories = {$in: categories[params.categories]};
+                } else {
+                    query.categories = {$in: []};
+                    params.categories.forEach(function (category) {
+                        query.categories.$in = query.categories.$in.concat(categories[category]);
+                    });
+                }
+            }
+            if (params.minPrice != undefined) {
+                query['maxPrice'] = {$gte: Number(params.minPrice)}
+            }
+            if (params.maxPrice != undefined) {
+                query['minPrice'] = {$lte: Number(params.maxPrice)}
+            }
+            if (params.startDate == undefined) {
+                reply({error: "provide a start Date"})
+            } else if (params.endDate == undefined) {
+                var start = new Date(params.startDate.replace('"', '').replace('"', '')).setHours(0, 0, 0, 0);
+                var end = new Date(params.startDate.replace('"', '').replace('"', '')).setHours(23, 59, 59, 999);
+            } else {
+                start = new Date(params.startDate.replace('"', '').replace('"', '')).setHours(0, 0, 0, 0);
+                end = new Date(params.endDate.replace('"', '').replace('"', '')).setHours(23, 59, 59, 999);
+            }
+            query['start'] = {"$gt": new Date(start), "$lt": new Date(end)};
+
+            Event.find(query).limit(numberPerPage).skip(skip).sort('start').exec(function (err, docs) {
+                if (err)throw err;
+                docs.forEach(function (doc) {
+                    doc._doc.pinned = request.auth.isAuthenticated ? request.session.get('eventPinned').indexOf(doc.get('id')) !== -1 : false;
+                    doc._doc.category = Event.setCategory(doc, params.categories);
+                });
+                reply(docs);
             });
         }
-    }
-    if (params.minPrice != undefined) {
-        query['maxPrice'] = {$gte: Number(params.minPrice)}
-    }
-    if (params.maxPrice != undefined) {
-        query['minPrice'] = {$lte: Number(params.maxPrice)}
-    }
-    if (params.startDate == undefined) {
-        reply({error: "provide a start Date"})
-    } else if (params.endDate == undefined) {
-        var start = new Date(params.startDate.replace('"', '').replace('"', '')).setHours(0, 0, 0, 0);
-        var end = new Date(params.startDate.replace('"', '').replace('"', '')).setHours(23, 59, 59, 999);
-    } else {
-        start = new Date(params.startDate.replace('"', '').replace('"', '')).setHours(0, 0, 0, 0);
-        end = new Date(params.endDate.replace('"', '').replace('"', '')).setHours(23, 59, 59, 999);
-    }
-    query['startDate'] = {"$gt": new Date(start), "$lt": new Date(end)};
-
-
-    if (params.latitude != undefined && params.longitude) {
-        query['place.geo'] = { $nearSphere: [Number(params.longitude), Number(params.latitude)], $maxDistance: params.distance / 3959};
-    }
-
-    Event.find(query).limit(numberPerPage).skip(skip).sort('startDate').exec(function (err, docs) {
-        if (err)throw err;
-        docs.forEach(function (doc) {
-            doc._doc.pinned = request.auth.isAuthenticated ? request.session.get('eventPinned').indexOf(doc.get('id')) !== -1 : false;
-            doc._doc.category = Event.setCategory(doc,params.categories);
-        });
-        reply(docs);
-    });
-
+    )
+    ;
 
 };
 
@@ -102,7 +114,7 @@ exports.logInValidate = {
     }
 };
 exports.logIn = function (request, reply) {
-    var User = mongoose.model('User');
+    var user = require('../models/user')();
     User.findOne({ email: request.payload.email })
         .exec(function (err, doc) {
             if (err) return reply({'error': err});
@@ -130,7 +142,7 @@ exports.isAuth = function (request, reply) {
 };
 
 exports.pinEvent = function (request, reply) {
-    var User = mongoose.model('User');
+    var User = require('../models/user')();
     //verify that is not already pinned
     if (request.session.get('eventPinned').indexOf(request.params.eventId) !== -1) return reply({'error': 'Already pinned'});
     request.session.get('eventPinned').push(request.params.eventId);
@@ -142,9 +154,9 @@ exports.pinEvent = function (request, reply) {
 };
 
 exports.unPinEvent = function (request, reply) {
-    var User = mongoose.model('User');
+    var User = require('../models/user')();
     //verify that is not already pinned
-    var a =  request.session.get('eventPinned');
+    var a = request.session.get('eventPinned');
     a.splice(a.indexOf(request.params.enventId));
     request.session.set('eventPinned', a);
     User.update({_id: request.auth.credentials.id}, {$pull: {eventPinned: request.params.eventId }}, function (err, model) {
@@ -155,12 +167,13 @@ exports.unPinEvent = function (request, reply) {
 };
 
 exports.getPinnedEvents = function (request, reply) {
-    var Event = mongoose.model('Event');
+    var Event = require('../models/event')();
     if (!request.session.get('eventPinned')) return reply([]);
     Event.find({_id: {$in: request.session.get('eventPinned')}}).exec(function (err, docs) {
         if (err) return reply({'error': err});
 
         docs.forEach(function (doc) {
+            if (!doc.get('end')) doc._doc.end = new Date(new Date(doc.get('start')).getTime() + 2 * 60 * 1000);//if no end date we add 2 hours
             doc._doc.category = Event.setCategory(doc);
         });
         reply(docs);
@@ -185,7 +198,7 @@ exports.signupHTML = function (request, reply) {
 };
 
 exports.eventHTML = function (request, reply) {
-    var Event = mongoose.model('Event');
+    var Event = require('../models/event')();
     Event.findOne({_id: request.params.eventId}).exec(function (err, doc) {
         if (doc === null) return reply("No event found");
         reply('<h1>' + doc.get('title') + '</h1> \
@@ -202,6 +215,6 @@ exports.eventHTML = function (request, reply) {
     });
 
 
-}
+};
 
 

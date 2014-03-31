@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-    controller('mainCtrl', ['$scope', '$modal', '$location', '$window', 'scroller','Events', 'User', function ($scope, $modal, $location, $window,scroller, Events, User) {
+    controller('mainCtrl', ['$scope', '$modal', '$location', '$window', 'scroller', 'Events', 'User', function ($scope, $modal, $location, $window, scroller, Events, User) {
 
         // ----- functions
         $scope.goToEvent = function (id) {
@@ -19,8 +19,7 @@ angular.module('myApp.controllers', []).
         };
 
         $scope.showMore = function () {
-
-            Events.eventsFind.query({page: ++page, latitude: $location.search().latitude , longitude: $location.search().longitude , startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
+            Events.eventsFind.query({page: ++page, latitude: $location.search().latitude, longitude: $location.search().longitude, startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
                 $scope.events = $scope.events.concat(data);
                 refreshMarkers();
             })
@@ -28,7 +27,7 @@ angular.module('myApp.controllers', []).
 
         $scope.search = function () {
             $scope.markers = [];
-            Events.eventsFind.query({latitude: $location.search().latitude , longitude: $location.search().longitude , startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
+            Events.eventsFind.query({latitude: $location.search().latitude, longitude: $location.search().longitude, startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
                 $scope.events = data;
                 refreshMarkers();
             });
@@ -90,8 +89,8 @@ angular.module('myApp.controllers', []).
 
         var moveMap = function () {
             $scope.map.center = {
-                latitude: $location.search().latitude ,
-                longitude: $location.search().longitude 
+                latitude: $location.search().latitude,
+                longitude: $location.search().longitude
             }
 
         };
@@ -109,8 +108,8 @@ angular.module('myApp.controllers', []).
         $location.search('longitude', -122.419415500000010000);
         $scope.map = {
             center: {
-                latitude: $location.search().latitude ,
-                longitude: $location.search().longitude 
+                latitude: $location.search().latitude,
+                longitude: $location.search().longitude
             },
 
             options: {
@@ -260,7 +259,71 @@ angular.module('myApp.controllers', []).
 
     }])
     .controller('dashboard', ['$scope', 'User', function ($scope, User) {
-        $scope.events = User.getPinnedEvents.query({}, function (data) {
 
+//        $scope.calEventsExt = {
+//            color: '#f00',
+//            textColor: 'yellow',
+//            events: [
+//                {type: 'party', title: 'Lunch', start: new Date(y, m, d, 12, 0), end: new Date(y, m, d, 14, 0), allDay: false},
+//                {type: 'party', title: 'Lunch 2', start: new Date(y, m, d, 12, 0), end: new Date(y, m, d, 14, 0), allDay: false},
+//                {type: 'party', title: 'Click for Google', start: new Date(y, m, 28), end: new Date(y, m, 29), url: 'http://google.com/'}
+//            ]
+//        };
+
+        /* alert on eventClick */
+        $scope.alertOnEventClick = function (event, allDay, jsEvent, view) {
+            $scope.alertMessage = (event.title + ' was clicked ');
+        };
+        /* alert on Drop */
+        $scope.alertOnDrop = function (event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
+            $scope.alertMessage = ('Event Droped to make dayDelta ' + dayDelta);
+        };
+        /* alert on Resize */
+        $scope.alertOnResize = function (event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view) {
+            $scope.alertMessage = ('Event Resized to make dayDelta ' + minuteDelta);
+        };
+
+        /* add custom event*/
+//        $scope.addEvent = function() {
+//            $scope.events.push({
+//
+//            });
+//        };
+        /* remove event */
+        $scope.remove = function (index) {
+            $scope.events.splice(index, 1);
+        };
+
+        $scope.uiConfig = {
+            calendar: {
+                height: 450,
+                editable: false,
+                allDayDefault: false,
+                header: {
+                    left: 'month agendaWeek agendaDay',
+                    center: 'title',
+                    right: 'today prev,next'
+                },
+                eventClick: $scope.alertOnEventClick,
+                eventDrop: $scope.alertOnDrop,
+                eventResize: $scope.alertOnResize
+            }
+        };
+
+
+        $(window).resize(function () {
+            var h = $(window).height(),
+                offsetTop = 200; // Calculate the top offset
+            $scope.uiConfig.calendar.height = (h - offsetTop);
+        }).resize();
+
+        $scope.events = [];
+        $scope.eventSources = [$scope.events];
+        User.getPinnedEvents.query({}, function (data) {
+            data.forEach(function (item) {
+                item.start = new Date(item.start);
+                item.end = new Date(item.end);
+                $scope.events.push(item);
+            });
         });
     }]);

@@ -1,9 +1,14 @@
 <!doctype html>
 <html lang="en" ng-app="myApp">
 <head>
-    <meta name="fragment" content="!" />
+    <meta name="fragment" content="!"/>
     <meta charset="utf-8">
+    <meta name="description" content="Find events near your place !">
+    <meta name="keywords" content="Events,Sport,Show,Concerts,Meetings">
+    <meta name="author" content="Maurin Lenglart">
+    <meta charset="UTF-8">
     <title>Bee Buzy</title>
+
     <link rel="stylesheet" href="css/boostrap.css"/>
     <link rel="stylesheet" href="css/app.css"/>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
@@ -18,15 +23,22 @@
 </div>
 
 
+<script type="text/javascript" src="lib/bower_components/jquery/jquery.js"></script>
+
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-resource.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-route.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular-sanitize.min.js"></script>
-
-<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
 
+<script type="text/javascript" src="lib/bower_components/jquery-ui/ui/jquery-ui.js"></script>
 
+<script type="text/javascript" src="lib/bower_components/angular-ui-calendar/src/calendar.js"></script>
+<script type="text/javascript" src="lib/bower_components/fullcalendar/fullcalendar.js"></script>
+<script type="text/javascript" src="lib/bower_components/fullcalendar/gcal.js"></script>
+
+
+<link rel="stylesheet" href="lib/bower_components/fullcalendar/fullcalendar.css" />
 
 
 <script src="lib/angular-google-maps.js"></script>
@@ -47,7 +59,20 @@
 
 
 <script>
-    (function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b;a[b]=a[b]||function(){(a[b].a=a[b].a||[]).push(arguments)};a[b].b=1*new Date;c=e.createElement(f);d=e.getElementsByTagName(f)[0];c.async=1;c.src=g;d.parentNode.insertBefore(c,d)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","UA-47826783-1","beebuzy.com");ga("send","pageview");
+    (function (a, e, f, g, b, c, d) {
+        a.GoogleAnalyticsObject = b;
+        a[b] = a[b] || function () {
+            (a[b].a = a[b].a || []).push(arguments)
+        };
+        a[b].b = 1 * new Date;
+        c = e.createElement(f);
+        d = e.getElementsByTagName(f)[0];
+        c.async = 1;
+        c.src = g;
+        d.parentNode.insertBefore(c, d)
+    })(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+    ga("create", "UA-47826783-1", "beebuzy.com");
+    ga("send", "pageview");
 
 </script>
 
