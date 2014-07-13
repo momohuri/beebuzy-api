@@ -1,8 +1,8 @@
 var mongoose = require('mongoose'),
     categories = require('../resources/categories.json'),
     Hapi = require('hapi'),
-
     User = require('../models/user')();
+    Joi = require('joi');
 
 
 exports.find = function (request, reply) {
@@ -69,12 +69,12 @@ exports.find = function (request, reply) {
         }
     );
 };
-
+debugger
 exports.signUpValidate = {
     payload: {
-        name: Hapi.types.String().required(),
-        email: Hapi.types.String().required(),
-        password: Hapi.types.String().required()
+        name: Joi.string().required(),
+        email: Joi.string().required(),
+        password: Joi.string().required()
     }
 };
 exports.signUp = function (request, reply) {
