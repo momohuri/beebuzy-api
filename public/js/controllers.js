@@ -14,8 +14,6 @@ angular.module('myApp.controllers', []).
             $scope.events.forEach(function (event) {
                 $scope.markers.push({_id: event._id, geo: {longitude: event.place.geo.coordinates[0], latitude: event.place.geo.coordinates[1]}, icon: "img/" + event.category + "-map.png"});
             });
-            //for the seo
-            $scope.htmlReady()
         };
 
         $scope.showMore = function () {
@@ -67,7 +65,7 @@ angular.module('myApp.controllers', []).
                         $location.path("/dashboard");
                     }
                 });
-            }
+            };
 
             $scope.ok = function () {
                 $modalInstance.close();
@@ -272,23 +270,12 @@ angular.module('myApp.controllers', []).
 
         /* alert on eventClick */
         $scope.alertOnEventClick = function (event, allDay, jsEvent, view) {
-            $scope.alertMessage = (event.title + ' was clicked ');
-        };
-        /* alert on Drop */
-        $scope.alertOnDrop = function (event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
-            $scope.alertMessage = ('Event Droped to make dayDelta ' + dayDelta);
-        };
-        /* alert on Resize */
-        $scope.alertOnResize = function (event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view) {
-            $scope.alertMessage = ('Event Resized to make dayDelta ' + minuteDelta);
+            $scope.$apply(function () {
+                $scope.event = event;
+            });
+            return false;
         };
 
-        /* add custom event*/
-//        $scope.addEvent = function() {
-//            $scope.events.push({
-//
-//            });
-//        };
         /* remove event */
         $scope.remove = function (index) {
             $scope.events.splice(index, 1);
@@ -296,7 +283,7 @@ angular.module('myApp.controllers', []).
 
         $scope.uiConfig = {
             calendar: {
-                height: 450,
+                aspectRatio: 2,
                 editable: false,
                 allDayDefault: false,
                 header: {
@@ -311,12 +298,6 @@ angular.module('myApp.controllers', []).
         };
 
 
-        $(window).resize(function () {
-            var h = $(window).height(),
-                offsetTop = 200; // Calculate the top offset
-            $scope.uiConfig.calendar.height = (h - offsetTop);
-        }).resize();
-
         $scope.events = [];
         $scope.eventSources = [$scope.events];
         User.getPinnedEvents.query({}, function (data) {
@@ -325,5 +306,7 @@ angular.module('myApp.controllers', []).
                 item.end = new Date(item.end);
                 $scope.events.push(item);
             });
+            $scope.event = $scope.events[0];
+
         });
     }]);

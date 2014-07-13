@@ -13,7 +13,6 @@ angular.module('myApp', [
     'ui.bootstrap',
     'pascalprecht.translate',
     'ngSanitize',
-    'seo',
     'duScroll',
     'ui.calendar'
 ]).

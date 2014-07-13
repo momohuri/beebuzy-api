@@ -50,7 +50,7 @@ angular.module('myApp.directives', [])
                             scope.ngAutocomplete = element.val();
                         });
                     })
-                }
+                };
                 newAutocomplete();
 
                 //watch options provided to directive
@@ -66,9 +66,16 @@ angular.module('myApp.directives', [])
             }
         };
     })
-    .directive('authheader', function () {
+    .directive('eventSearchEngine', function () {
+        return {
+            restrict: 'AE',
+            templateUrl: '/html/directive/eventSearchEngine.html'
+        };
+    })
+    .directive('authHeader', function () {
         return {
             restrict: 'AE',
             templateUrl: '/html/directive/authHeader.html'
         };
-    })
+    });
+

@@ -31,7 +31,7 @@
 
     <div class="row content" ng-controller="Event">
         <div class="col-md-4">  <!-- colone 1 -->
-            <div class="row pin" ng-repeat="event in events" id="{{event._id}}">
+            <div class="row pin" id="{{event._id}}">
 
                 <!-- debut events-->
 
@@ -48,7 +48,7 @@
 
                         <p class="street">{{event.place.street}} - {{event.place.city}} {{event.place.region}}</p>
 
-                        <p class="description" ng-bind-html="event.description | truncateHTML:500"></p>
+                        <p class="description" ng-bind-html="event.description"></p>
 
                         <p><span class="price">{{event.price.min|number}} {{event.price.currency}} <span
                                 ng-show="event.price.max">- {{event.price.max|number}} {{event.price.currency}}</span>
@@ -57,7 +57,6 @@
                             <span class="event-button">
                                 <a class="btn btn-success" ng-show="!event.pinned"
                                    ng-click="pinEvent(event._id)">Unpin</a>
-                                <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
                             </span>
                         </p>
 
@@ -67,7 +66,7 @@
             </div>
         </div>
 
-        <div class="col-md-8 affix right">  <!-- colone 2 -->
+        <div class="col-md-8">  <!-- colone 2 -->
             <div class="calendar pin" ng-model="eventSources" ui-calendar="uiConfig.calendar"></div>
         </div>
 

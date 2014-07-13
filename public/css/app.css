@@ -9,7 +9,6 @@ html, body {
     height: 100%;
 }
 
-
 /* Fonts */
 
 @font-face {
@@ -63,11 +62,10 @@ a:hover {
     width: 65%;
 }
 
-.nospace .col-md-4{
+.nospace .col-md-4 {
     padding-left: 0px;
     padding-right: 0px;
 }
-
 
 /* --------------------------------------------- HEADER/RECHERCHE -----------------------------------------------*/
 
@@ -99,8 +97,8 @@ a:hover {
 }
 
 .login:hover {
- background-color: #EFD242;
- color: black;
+    background-color: #EFD242;
+    color: black;
 }
 
 .setting {
@@ -119,7 +117,7 @@ a:hover {
 }
 
 .setting:hover {
- color: #EFD242;
+    color: #EFD242;
 }
 
 .pac-container {
@@ -141,7 +139,6 @@ a:hover {
     background-color: #EFC660;
 
 }
-
 
 #find {
     width: 75%;
@@ -192,8 +189,6 @@ a:hover {
 .other-color {
     color: black;
 }
-
-
 
 /* --------------------------------------------- CONTENUE LA MAIN PAGE -----------------------------------------------*/
 
@@ -253,17 +248,14 @@ a:hover {
 
 .pres {
     float: left;
-    width:100%;
+    width: 100%;
 }
 
-
-.event-button{
-  float:right;
+.event-button {
+    float: right;
     margin-right: 10px;
     margin-bottom: 10px;
 }
-
-
 
 /* ------------------------------- LA MAPS ----------------------------------*/
 
@@ -271,11 +263,7 @@ a:hover {
     max-width: none;
 }
 
-
-
-
 /* --------------------------------------------- CONTENUE LA MAIN PAGE V2 -----------------------------------------------*/
-
 
 .vign {
     background-color: rgba(255, 255, 255, 0.5);
@@ -291,30 +279,22 @@ a:hover {
     -webkit-box-shadow: 0px 0px 2px 1px rgba(119, 119, 119, 0.75);
 }
 
-
 .icone-circle {
     width: 80px;
     margin-top: 35px;
 }
 
-
-
-.event-button-info{
-  float:right;
-    margin-right: 10px;
-    margin-top: 50px;
+.event-button-info {
+    margin-top:40px;
+    float:right;
 }
-
-
-
-
 
 /* --------------------------------------------- CONTENUE DE DASHBOARD -----------------------------------------------*/
 
 .dashboard {
     width: 100%;
     height: 100%;
-    background:#F2F2F2;
+    background: #F2F2F2;
 }
 
 .content {
@@ -334,7 +314,6 @@ a:hover {
     -webkit-box-shadow: 0px 0px 2px 1px rgba(119, 119, 119, 0.75);
 }
 
-
 #divider-dash {
     position: relative;
     width: 100%;
@@ -343,16 +322,13 @@ a:hover {
     color: #111111;
 }
 
-
-
-.illu{
+.illu {
     position: relative;
     width: 100%;
     margin-top: 2px;
     overflow: hidden;
 
 }
-
 
 /* --------------------------------------------- RESPONSIVE -----------------------------------------------*/
 
@@ -378,7 +354,6 @@ a:hover {
     }
 
 }
-
 
 /* Mobile */
 @media screen and (max-width: 480px) {

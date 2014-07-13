@@ -67,9 +67,7 @@ exports.find = function (request, reply) {
                 reply(docs);
             });
         }
-    )
-    ;
-
+    );
 };
 
 exports.signUpValidate = {
@@ -122,10 +120,10 @@ exports.logIn = function (request, reply) {
             User.validate(request.payload.password, doc.get('password'), function (err, isValid) {
                 if (err) return reply({'error': err});
                 if (!isValid) return reply({'error': 'Password not valid'});
-                console.log('aurh', request.auth);
-                console.log('session', request.auth.session);
+
                 request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
                 request.session.set('eventPinned', doc.get("eventPinned"));
+                console.log('session', request.session.get('eventPinned'));
                 reply({success: true, name: doc.get('name')});
             });
         });

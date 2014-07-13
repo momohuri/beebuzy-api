@@ -1,0 +1,55 @@
+<div class="col-md-8"> <!-- debut text -->
+    <div class="pres">
+        <h1>{{event.title}}</h1>
+
+        <p class="date">{{event.startDate | date:'MMM d, yyyy hh:mm'}} <span
+                class="displaymob {{event.category}}-color "> {{event.category}} </span></p>
+
+        <p class="street">{{event.place.street}} - {{event.place.city}} {{event.place.region}}</p>
+
+        <p class="description" ng-bind-html="event.description | truncateHTML:400"></p>
+
+        <!--<p>-->
+        <!--<span class="price">{{event.price.min|number}} {{event.price.currency}} <span-->
+        <!--ng-show="event.price.max">- {{event.price.max|number}} {{event.price.currency}}</span>-->
+        <!--</span>-->
+        <!--</p>-->
+
+
+    </div>
+</div>
+<!-- fin text-->
+
+<div class="col-md-4">
+    <div class="row">
+        <div class="col-md-3"><!-- icone -->
+            <img src="img/{{event.category}}-info.png" class="icone-circle" alt=""/>
+        </div>
+
+        <div class="col-md-3"><!-- icone -->
+            <img src="img/circle-price.png" class="icone-circle" alt=""/>
+        </div>
+
+        <div class="col-md-3"><!-- icone -->
+            <p class="date">{{event.start | date:'MMM d, yyyy hh:mm'}}
+                <span class="displaymob {{event.category}}-color "> {{event.category}} </span>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <span class="event-button-info">
+                 <a class="btn btn-success" ng-show="!{{event.pinned}}" ng-click="pinEvent(event._id)">Pin</a>
+                 <a class="btn btn-default" ng-click="openModal('EventModal',event)">Read More</a>
+            </span>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- image
+    <div class="col-md-12"><img ng-src="{{event.imageUrl}}" class="illu" alt="" /></div>
+</div> -->
+
+
