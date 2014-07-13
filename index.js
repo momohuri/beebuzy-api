@@ -29,8 +29,6 @@ server.pack.require(['hapi-auth-cookie'], function (err) {
 
     server.route([
 
-        {method: 'GET', path: "/_escape_fragment_/{p*}", config: {handler: SEO}},
-
         { method: 'GET', path: '/find', config: {handler: Controllers.Home.find, auth: { mode: 'try' }}},
         { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate}},
         { method: 'POST', path: '/login', config: {handler: Controllers.Home.logIn, validate: Controllers.Home.logInValidate, auth: { mode: 'try' }} },
