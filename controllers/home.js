@@ -69,7 +69,7 @@ exports.find = function (request, reply) {
         }
     );
 };
-debugger
+
 exports.signUpValidate = {
     payload: {
         name: Joi.string().required(),
@@ -107,8 +107,8 @@ exports.signUp = function (request, reply) {
 
 exports.logInValidate = {
     payload: {
-        password: Hapi.types.String().required(),
-        email: Hapi.types.String().required()
+        password: Joi.string().required(),
+        email: Joi.string().required()
     }
 };
 exports.logIn = function (request, reply) {
