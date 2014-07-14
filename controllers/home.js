@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     categories = require('../resources/categories.json'),
     Hapi = require('hapi'),
     User = require('../models/user')();
-   // Joi = require('joi');
+   Joi = require('joi');
 
 
 exports.find = function (request, reply) {
@@ -71,11 +71,11 @@ exports.find = function (request, reply) {
 };
 
 exports.signUpValidate = {
-//    payload: {
-//        name: Joi.string().required(),
-//        email: Joi.string().required(),
-//        password: Joi.string().required()
-//    }
+    payload: {
+        name: Joi.string().required(),
+        email: Joi.string().required(),
+        password: Joi.string().required()
+    }
 };
 exports.signUp = function (request, reply) {
     var User = mongoose.model('User');
@@ -106,10 +106,10 @@ exports.signUp = function (request, reply) {
 };
 
 exports.logInValidate = {
-//    payload: {
-//        password: Joi.string().required(),
-//        email: Joi.string().required()
-//    }
+    payload: {
+        password: Joi.string().required(),
+        email: Joi.string().required()
+    }
 };
 exports.logIn = function (request, reply) {
     var user = require('../models/user')();
