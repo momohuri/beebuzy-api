@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "bcrypt": "^0.7.7",
     "bell": "^1.0.2",
     "glob": "^3.2.8",
     "hapi": "^6.0.2",

@@ -105,28 +105,27 @@ exports.signUp = function (request, reply) {
         });
 };
 
-exports.logInValidate = {
-    payload: {
-        password: Joi.string().required(),
-        email: Joi.string().required()
-    }
-};
-exports.logIn = function (request, reply) {
-    var user = require('../models/user')();
-    User.findOne({ email: request.payload.email })
+logIn = function (user, next) {
+    var User = require('../models/user')();
+    User.findOne({ userId: user.userId })
         .exec(function (err, doc) {
             if (err) return reply({'error': err});
-            if (doc === null) return reply({'error': 'Name not found'});
-            User.validate(request.payload.password, doc.get('password'), function (err, isValid) {
-                if (err) return reply({'error': err});
-                if (!isValid) return reply({'error': 'Password not valid'});
-
-                request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
-                request.session.set('eventPinned', doc.get("eventPinned"));
-                console.log('session', request.session.get('eventPinned'));
-                reply({success: true, name: doc.get('name')});
-            });
+            if (doc === null) {
+                User.create(user, next);
+            } else {
+                next(doc);
+            }
         });
+};
+
+exports.twitterAuth = function (request, reply) {
+    var user = {
+        name: request.auth.credentials.profile.displayName,
+        userId: request.auth.credentials.provider + request.auth.credentials.profile.id
+    };
+    logIn(user, function (doc) {
+      reply(doc);
+    });
 };
 
 exports.logout = function (request, reply) {
@@ -134,7 +133,6 @@ exports.logout = function (request, reply) {
     request.session.clear();
     return reply({'success': true});
 };
-
 
 exports.pinEvent = function (request, reply) {
     var User = require('../models/user')();
@@ -173,43 +171,6 @@ exports.getPinnedEvents = function (request, reply) {
         });
         reply(docs);
     });
-};
-
-exports.loginHTML = function (request, reply) {
-    return reply('<html><head><title>Login page</title></head><body>'
-        + '<form method="post" action="/login">'
-        + 'email: <input type="text" name="email"><br>'
-        + 'Password: <input type="password" name="password"><br/>'
-        + '<input type="submit" value="Login"></form></body></html>');
-};
-
-exports.signupHTML = function (request, reply) {
-    return reply('<html><head><title>Login page</title></head><body>'
-        + '<form method="post" action="/signUp">'
-        + 'name: <input type="text" name="name"><br>'
-        + 'email: <input type="text" name="email"><br>'
-        + 'Password: <input type="password" name="password"><br/>'
-        + '<input type="submit" value="Login"></form></body></html>');
-};
-
-exports.eventHTML = function (request, reply) {
-    var Event = require('../models/event')();
-    Event.findOne({_id: request.params.eventId}).exec(function (err, doc) {
-        if (doc === null) return reply("No event found");
-        reply('<h1>' + doc.get('title') + '</h1> \
-    </div>                               \
-        <div class="modal-body">            \
-            <p class="price">' + doc.get('price.min') + '-' + doc.get('price.max') + '</span>   \
-            </p>                                                                                                      \
-            <p class="date">' + doc.get('startDate') + '</p>                                                            \
-            <p class="street">' + doc.get('place.street') + ' - ' + doc.get('place.city') + '  ' + doc.get('place.region') + ' -      \
-                ' + doc.get('place.name') + '</p>                                                                          \
-            <p class="description">' + doc.get('description') + '</p>                                               \
-        </div>                                                                                                                 \
-    </div>');
-    });
-
-
 };
 
 

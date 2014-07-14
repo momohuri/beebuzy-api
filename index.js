@@ -12,16 +12,24 @@ function main() {
     var server = new Hapi.Server(8000);
 
     server.pack.register(require('bell'), function (err) {
-        server.route([
+        server.auth.strategy('twitter', 'bell', {
+            provider: 'twitter',
+            password: 'cookie_encryption_password',
+            clientId: 'ao4tmlwNNhBmKfxaUZqk4QN8w',
+            clientSecret: 'Ymr3coFBZ6D8pWrerJUmBRjwELaYCX2DnHbj5SgSINNThqDL68',
+            isSecure: false     // Terrible idea but required if not using HTTPS
+        });
 
+        server.route([
+            {   method: ['GET'], path: '/twitterAuth',
+                config: {
+                    auth: { strategy: 'twitter', mode: 'try'},
+                    handler: Controllers.Home.twitterAuth
+                }
+            },
             { method: 'GET', path: '/find', config: {handler: Controllers.Home.find}},
             { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate}},
-            { method: 'POST', path: '/login', config: {handler: Controllers.Home.logIn, validate: Controllers.Home.logInValidate} },
             { method: 'GET', path: '/logout', config: {handler: Controllers.Home.logout  }},
-
-            { method: 'GET', path: '/html', config: {handler: Controllers.Home.loginHTML} },
-            { method: 'GET', path: '/htmlsignup', config: {handler: Controllers.Home.signupHTML} },
-            { method: 'GET', path: '/eventHTML/{eventId}', config: {handler: Controllers.Home.eventHTML} },
 
             { method: 'GET', path: '/pinEvent/{eventId}', config: { handler: Controllers.Home.pinEvent }},
             { method: 'GET', path: '/unPinEvent/{eventId}', config: { handler: Controllers.Home.unPinEvent  }},

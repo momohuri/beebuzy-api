@@ -1,5 +1,5 @@
 {
-    "mongoCities": "mongodb://momohuri:​buzyTheBee@dharma.mongohq.com:10011/evenire",
-    "mongoEvents": "mongodb://momohuri:​buzyTheBee@alex.mongohq.com:10078/events",
-    "mongoCheckEvents": "mongodb://momohuri:​buzyTheBee@dharma.mongohq.com:10054/check-event"
+    "mongoCities": "mongodb://adrien.vinches@dharma.mongohq.com:10011/evenire",
+    "mongoEvents": "mongodb://adrien:vinches@alex.mongohq.com:10078/events",
+    "mongoCheckEvents": "mongodb://adrien:vinches@dharma.mongohq.com:10054/check-event"
 }
