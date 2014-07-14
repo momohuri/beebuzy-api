@@ -111,7 +111,9 @@ logIn = function (user, next) {
         .exec(function (err, doc) {
             if (err) return reply({'error': err});
             if (doc === null) {
-                User.create(user, next);
+                User.create(user, function (err, doc) {
+                    next(doc);
+                });
             } else {
                 next(doc);
             }
