@@ -24,7 +24,7 @@ exports.find = function (request, reply) {
 //        if (params.latitude != undefined && params.longitude) {
 //            query['place.geo'] = { $nearSphere: [Number(params.longitude), Number(params.latitude)], $maxDistance: params.distance / 3959};
 //        }
-
+            if (!docs) return reply([]);
             var cities = [];
             docs.forEach(function (item) {
                 if (cities.indexOf(item._id.city) === -1) cities.push(item._id.city);

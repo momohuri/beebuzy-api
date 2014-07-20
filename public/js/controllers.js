@@ -24,9 +24,11 @@ angular.module('myApp.controllers', []).
         };
 
         $scope.search = function () {
+            $scope.loader = true;
             $scope.markers = [];
             Events.eventsFind.query({latitude: $location.search().latitude, longitude: $location.search().longitude, startDate: new Date($scope.startDate).toString(), endDate: new Date($scope.endDate).toString(), categories: $scope.categories}, function (data) {
                 $scope.events = data;
+                $scope.loader = false;
                 refreshMarkers();
             });
         };
