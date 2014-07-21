@@ -182,17 +182,19 @@ angular.module('myApp.controllers', []).
 
         }
 
-        var homeControlDiv = document.createElement('div');
-        var homeControl = new SearchInLocationDiv(homeControlDiv);
-        homeControlDiv.index = 1;
-        //-----/base actions
-
-        // ---- watch
-        $scope.$watch(function () {
-            return $window._m;
-        }, function (n, o) {
-            $window._m.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
-        });
+//        var homeControlDiv = document.createElement('div');
+//        var homeControl = new SearchInLocationDiv(homeControlDiv);
+//        homeControlDiv.index = 1;
+//        //-----/base actions
+//
+//        // ---- watch
+//        $scope.$watch(function () {
+//            debugger
+//            return $window._m;
+//        }, function (n, o) {
+//            debugger
+//            $window._m.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
+//        });
 
         $scope.$watch('categories', function (newValue, oldValue) {
             if (newValue !== oldValue) {

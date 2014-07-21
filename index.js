@@ -11,11 +11,18 @@ function main() {
 
     var server = new Hapi.Server(8000);
 
+    server.state('session', {
+        isSecure: false,
+        encoding: 'base64json'
+    });
     server.pack.register(require('bell'), function (err) {
-        server.auth.strategy('twitter', 'bell', {
+        server.pack.register(require('hapi-auth-cookie'), function (err) {
+
+            server.auth.strategy('twitter', 'bell', {
             provider: 'twitter',
             password: 'cookie_encryption_password',
             clientId: 'ao4tmlwNNhBmKfxaUZqk4QN8w',
+            cookie: 'bbSession',
             clientSecret: 'Ymr3coFBZ6D8pWrerJUmBRjwELaYCX2DnHbj5SgSINNThqDL68',
             isSecure: false     // Terrible idea but required if not using HTTPS
         });
@@ -42,6 +49,7 @@ function main() {
 
         server.start();
         console.log('listening to 8000');
+        });
     });
 }
 

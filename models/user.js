@@ -21,6 +21,20 @@ module.exports = function () {
         validate: function (password, storedPassword, callback) {
         },
         hashPassword: function (password, callback) {
+        },
+        logInProvider: function (user, next) {
+            var that = this;
+            that.findOne({ userId: user.userId })
+            .exec(function (err, doc) {
+                if (err) return next({'error': err});
+                if (doc === null) {
+                    that.create(user, function (err, doc) {
+                        next(null, doc);
+                    });
+                } else {
+                    next(null, doc);
+                }
+            });
         }
     };
 

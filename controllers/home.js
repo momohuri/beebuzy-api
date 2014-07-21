@@ -105,28 +105,31 @@ exports.signUp = function (request, reply) {
         });
 };
 
-logIn = function (user, next) {
-    var User = require('../models/user')();
-    User.findOne({ userId: user.userId })
-        .exec(function (err, doc) {
-            if (err) return reply({'error': err});
-            if (doc === null) {
-                User.create(user, function (err, doc) {
-                    next(doc);
-                });
-            } else {
-                next(doc);
-            }
-        });
-};
+//logIn = function (user, next) {
+//    var User = require('../models/user')();
+//    User.findOne({ userId: user.userId })
+//        .exec(function (err, doc) {
+//            if (err) return reply({'error': err});
+//            if (doc === null) {
+//                User.create(user, function (err, doc) {
+//                    next(doc);
+//                });
+//            } else {
+//                next(doc);
+//            }
+//        });
+//};
 
 exports.twitterAuth = function (request, reply) {
     var user = {
         name: request.auth.credentials.profile.displayName,
-        userId: request.auth.credentials.provider + request.auth.credentials.profile.id
-    };
-    logIn(user, function (doc) {
-      reply(doc);
+        userId: request.auth.credentials.provider + '_#_' + request.auth.credentials.profile.id
+        };
+    User.logInProvider(user, function (err, doc) {
+      if (err) return reply(err);
+      var session = request.state.session;
+      session = doc;
+      reply.redirect('#dashboardv2');
     });
 };
 
