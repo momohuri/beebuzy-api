@@ -112,10 +112,11 @@
 <div class="container main"> <!-- debut container main-->
 
     <div class="row">
-        <div ng-show="loader">
-            <img src="http://www.animauxdico.com/img/charte_graphique/lapin-2.jpg" alt="loader" />
-        </div>
+
         <div class="col-md-8" ng-controller="Event">
+            <div ng-show="loader">
+                <img src="/img/loading.gif" alt="loader" id="loader"/>
+            </div>
             <div class="row vign" ng-repeat="event in events" id="{{event._id}}">   <!-- debut events-->
                 <event-search-engine></event-search-engine>
             </div>
