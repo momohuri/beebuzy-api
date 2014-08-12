@@ -127,6 +127,7 @@ exports.twitterAuth = function (request, reply) {
         };
     User.logInProvider(user, function (err, doc) {
       if (err) return reply(err);
+        //todo tu assign 2 fois session, et tu l utilise pas apres.
       var session = request.state.session;
       session = doc;
       reply.redirect('#dashboardv2');
