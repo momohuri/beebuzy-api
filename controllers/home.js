@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     categories = require('../resources/categories.json'),
     Hapi = require('hapi'),
     User = require('../models/user')();
-Joi = require('joi');
+    Joi = require('joi');
 
 
 exports.find = function (request, reply) {
@@ -112,10 +112,10 @@ exports.login = function (request, reply) {
     var user = {
         email: request.payload.email,
         password: request.payload.password
-    }
+    };
     User.login(user, function (err, doc) {
         if (err) return reply(err);
-        request.auth.session.set(doc);
+        if (doc) request.auth.session.set(doc);
         return reply.redirect('/');
     });
 };
