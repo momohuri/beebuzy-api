@@ -20,23 +20,31 @@ module.exports = function () {
     User.statics = {
         validate: function (password, storedPassword, callback) {
         },
-        hashPassword: function (password, callback) {
+        hashPassword: function (password, next) {
+            next(null, password);
         },
         logInProvider: function (user, next) {
             var that = this;
             that.findOne({ userId: user.userId })
-            .exec(function (err, doc) {
-                if (err) return next({'error': err});
-                if (doc === null) {
-                    that.create(user, function (err, doc) {
+                .exec(function (err, doc) {
+                    if (err) return next({'error': err});
+                    if (doc === null) {
+                        that.create(user, function (err, doc) {
+                            next(null, doc);
+                        });
+                    } else {
                         next(null, doc);
-                    });
-                } else {
+                    }
+                });
+        },
+        login: function (user, next) {
+            var that = this;
+            that.findOne({ email: user.email, password: user.password })
+                .exec(function (err, doc) {
+                    if (err) return next({'error': err});
                     next(null, doc);
-                }
-            });
+                });
         }
     };
-
     return model = db.model('User', User);
 };

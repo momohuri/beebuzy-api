@@ -53,18 +53,23 @@ angular.module('myApp.controllers', []).
                         $scope.error = result.error;
                     } else {
                         $modalInstance.dismiss();
-                        $location.path("/dashboard");
+                        $scope.isAuth = true;
+                        $scope.name = result.name;
+                        $location.path("/");
                     }
                 });
             };
 
             $scope.login = function (user) {
                 User.login(user, function (result) {
+                    console.log(result);
                     if (result.error) {
                         $scope.error = result.error;
                     } else {
                         $modalInstance.dismiss();
-                        $location.path("/dashboard");
+                        $scope.isAuth = true;
+                        $scope.name = result.name;
+                        $location.path("/");
                     }
                 });
             };
@@ -305,12 +310,15 @@ angular.module('myApp.controllers', []).
         $scope.events = [];
         $scope.eventSources = [$scope.events];
         User.getPinnedEvents.query({}, function (data) {
-            data.forEach(function (item) {
-                item.start = new Date(item.start);
-                item.end = new Date(item.end);
-                $scope.events.push(item);
-            });
-            $scope.event = $scope.events[0];
-
+            if (data.length > 0) {
+                data.forEach(function (item) {
+                    item.start = new Date(item.start);
+                    item.end = new Date(item.end);
+                    $scope.events.push(item);
+                });
+                $scope.event = $scope.events[0];
+            } else {
+                $scope.event = null;
+            }
         });
     }]);

@@ -51,7 +51,7 @@ angular.module('myApp.services', ['ngResource']).
                     else {
                         sessionStorage.isAuth = true;
                         sessionStorage.name = data.name;
-                        return next({success: "Logged", name: data.name});
+                        return next({success: "Logged", name: data.name, isAuth: true});
                     }
                 })
             },

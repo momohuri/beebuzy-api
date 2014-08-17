@@ -15,17 +15,27 @@ function main() {
         isSecure: false,
         encoding: 'base64json'
     });
-    server.pack.register(require('bell'), function (err) {
-        server.pack.register(require('hapi-auth-cookie'), function (err) {
+    server.pack.register(require('hapi-auth-cookie'), function (err) {
+
+        server.auth.strategy('session', 'cookie', {
+            password: 'password',
+            cookie: 'bbSession',
+            redirectTo: false,
+            isSecure: false
+        });
+
+
+        server.pack.register(require('bell'), function (err) {
 
             server.auth.strategy('twitter', 'bell', {
-            provider: 'twitter',
-            password: 'cookie_encryption_password',
-            clientId: 'ao4tmlwNNhBmKfxaUZqk4QN8w',
-            cookie: 'bbSession',
-            clientSecret: 'Ymr3coFBZ6D8pWrerJUmBRjwELaYCX2DnHbj5SgSINNThqDL68',
-            isSecure: false     // Terrible idea but required if not using HTTPS
-        });
+                provider: 'twitter',
+                password: 'password',
+                clientId: 'ao4tmlwNNhBmKfxaUZqk4QN8w',
+                clientSecret: 'Ymr3coFBZ6D8pWrerJUmBRjwELaYCX2DnHbj5SgSINNThqDL68',
+                isSecure: false     // Terrible idea but required if not using HTTPS
+            });
+
+
 
         server.route([
             {   method: ['GET'], path: '/twitterAuth',
@@ -34,13 +44,41 @@ function main() {
                     handler: Controllers.Home.twitterAuth
                 }
             },
+            {   method: ['GET'], path: '/testLogin',
+                config: {
+                    auth: { strategy: 'session', mode: 'try'},
+                    handler: Controllers.Home.testLogin
+                }
+            },
+            {   method: ['POST'], path: '/login',
+                config: {
+                    auth: { strategy: 'session', mode: 'try'},
+                    handler: Controllers.Home.login
+                }
+            },
+            {   method: 'GET', path: '/logout',
+                config: {
+                    handler: Controllers.Home.logout,
+                    auth: { strategy: 'session', mode: 'try'}
+                }
+            },
             { method: 'GET', path: '/find', config: {handler: Controllers.Home.find}},
             { method: 'POST', path: '/signUp', config: {handler: Controllers.Home.signUp, validate: Controllers.Home.signUpValidate}},
-            { method: 'GET', path: '/logout', config: {handler: Controllers.Home.logout  }},
 
             { method: 'GET', path: '/pinEvent/{eventId}', config: { handler: Controllers.Home.pinEvent }},
             { method: 'GET', path: '/unPinEvent/{eventId}', config: { handler: Controllers.Home.unPinEvent  }},
-            {method: 'GET', path: '/getPinnedEvents', config: { handler: Controllers.Home.getPinnedEvents }},
+            {   method: 'GET', path: '/getAuthStatus',
+                config: {
+                auth: { strategy: 'session', mode: 'try'},
+                handler: Controllers.Home.getAuthStatus
+            }
+            },
+            {   method: 'GET', path: '/getPinnedEvents',
+                config: {
+                    auth: { strategy: 'session', mode: 'try'},
+                    handler: Controllers.Home.getPinnedEvents
+                }
+            },
 
             {method: 'GET', path: '/{path*}', handler: {directory: { path: './public', listing: false, index: true}}
             }
@@ -52,5 +90,4 @@ function main() {
         });
     });
 }
-
 main();
