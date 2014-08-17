@@ -198,6 +198,11 @@ a:hover {
     height: 100%;
 }
 
+#loader {
+    height: 200px;
+    margin-left: 40%;
+}
+
 .icone {
     width: 65px;
     margin-top: 30px;
@@ -285,8 +290,8 @@ a:hover {
 }
 
 .event-button-info {
-    margin-top:40px;
-    float:right;
+    margin-top: 40px;
+    float: right;
 }
 
 /* --------------------------------------------- CONTENUE DE DASHBOARD -----------------------------------------------*/
@@ -328,6 +333,21 @@ a:hover {
     margin-top: 2px;
     overflow: hidden;
 
+}
+
+/* --------------------------------------------- EVENT DIRECTIVE -----------------------------------------------*/
+
+.calendar {
+    background-image: url("/img/calendar.png");
+    background-size: 100% 100%;
+    margin-top: 35px;
+    width: 135px;
+    height: 100px;
+}
+
+.calendar > p {
+    margin-top:36px;
+    margin-left: 5px;
 }
 
 /* --------------------------------------------- RESPONSIVE -----------------------------------------------*/

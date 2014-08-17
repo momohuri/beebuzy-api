@@ -78,7 +78,7 @@ exports.signUpValidate = {
     }
 };
 exports.signUp = function (request, reply) {
-    var UserMongoose = mongoose.model('User');
+    var User = mongoose.model('User');
     User.findOne({ name: request.payload.name })
         .exec(function (err, doc) {
             if (err) return reply({'error': err});
@@ -93,11 +93,8 @@ exports.signUp = function (request, reply) {
                             request.payload.password = password;
                             User.create(request.payload, function (err, doc) {
                                 if (err) return reply({'error': err});
-                                var session = {
-                                    id: doc.get('id'),
-                                    name: doc.get('name'),
-                                    eventPinned: doc.get("eventPinned")
-                                };
+                                request.auth.session.set({id: doc.get('id'), name: doc.get('name')});
+                                request.session.set('eventPinned', doc.get("eventPinned"));
                                 reply({'success': true, name: doc.get('name')});
                             });
                         }
@@ -108,17 +105,20 @@ exports.signUp = function (request, reply) {
         });
 };
 
-exports.login = function (request, reply) {
-    var user = {
-        email: request.payload.email,
-        password: request.payload.password
-    }
-    User.login(user, function (err, doc) {
-        if (err) return reply(err);
-        request.auth.session.set(doc);
-        return reply.redirect('/');
-    });
-};
+//logIn = function (user, next) {
+//    var User = require('../models/user')();
+//    User.findOne({ userId: user.userId })
+//        .exec(function (err, doc) {
+//            if (err) return reply({'error': err});
+//            if (doc === null) {
+//                User.create(user, function (err, doc) {
+//                    next(doc);
+//                });
+//            } else {
+//                next(doc);
+//            }
+//        });
+//};
 
 exports.twitterAuth = function (request, reply) {
     var user = {
@@ -126,41 +126,18 @@ exports.twitterAuth = function (request, reply) {
         userId: request.auth.credentials.provider + '_#_' + request.auth.credentials.profile.id
         };
     User.logInProvider(user, function (err, doc) {
-        if (err) return reply(err);
-        request.auth.session.set(doc);
-        return reply.redirect('/');
+      if (err) return reply(err);
+      var session = request.state.session;
+      session = doc;
+      reply.redirect('#dashboardv2');
     });
 };
 
-exports.getAuthStatus = function (request, reply) {
-    if (request.auth.isAuthenticated) {
-        return reply({success: true, name: request.auth.credentials.name});
-    }
-    return reply({err: 'must log in'});
-};
-
-exports.testLogin = function (request, reply) {
-    if (request.auth.isAuthenticated) {
-        return reply('<html><head><title>Login page</title></head><body><h3>Welcome '
-            + request.auth.credentials.name
-            + '</h3></body></html>');
-    } else {
-        return reply('<html><head><title>Login page</title></head><body><h3>You must login</h3></body></html>');
-    }
-};
-
 exports.logout = function (request, reply) {
-    if (request.auth.isAuthenticated) {
-        request.auth.session.clear();
-    }
-    return reply.redirect('/');
-};
-
-/*exports.logout = function (request, reply) {
     request.auth.session.clear();
     request.session.clear();
     return reply({'success': true});
-};*/
+};
 
 exports.pinEvent = function (request, reply) {
     var User = require('../models/user')();
@@ -188,24 +165,17 @@ exports.unPinEvent = function (request, reply) {
 };
 
 exports.getPinnedEvents = function (request, reply) {
-    if(request.auth.isAuthenticated) {
-        var Event = require('../models/event')();
-        if (!request.auth.credentials.eventPinned) return reply([]);
-        Event.find({_id: {$in: request.auth.credentials.eventPinned}}).exec(function (err, docs) {
-            if (err) return reply({'error': err});
-            if (docs.length > 0) {
-                docs.forEach(function (doc) {
-                    if (!doc.get('end')) doc._doc.end = new Date(new Date(doc.get('start')).getTime() + 2 * 60 * 1000);//if no end date we add 2 hours
-                    doc._doc.category = Event.setCategory(doc);
-                });
-            } else {
-                docs = [];
-            }
-            reply(docs);
+    var Event = require('../models/event')();
+    if (!request.session.get('eventPinned')) return reply([]);
+    Event.find({_id: {$in: request.session.get('eventPinned')}}).exec(function (err, docs) {
+        if (err) return reply({'error': err});
+
+        docs.forEach(function (doc) {
+            if (!doc.get('end')) doc._doc.end = new Date(new Date(doc.get('start')).getTime() + 2 * 60 * 1000);//if no end date we add 2 hours
+            doc._doc.category = Event.setCategory(doc);
         });
-    } else {
-        reply([]);
-    }
+        reply(docs);
+    });
 };
 
 
